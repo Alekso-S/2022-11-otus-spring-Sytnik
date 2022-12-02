@@ -1,0 +1,5 @@
+id,question,answer,validity
+1,Some question 1,Some answer 1 to question 1,true
+1,Some question 1,Some answer 2 to question 1,false
+2,Some question 2,Some answer 1 to question 2,false
+2,Some question 2,Some answer 2 to question 2,true
