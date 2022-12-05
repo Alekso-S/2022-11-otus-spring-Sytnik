@@ -1,8 +1,13 @@
 package ru.otus.spring.dao;
 
-import ru.otus.spring.domain.Record;
+import ru.otus.spring.dto.TaskRecord;
+
 import java.util.List;
 
+/**
+ * Интерфейс связи с источником данных.
+ * Позволяет получить список записей
+ */
 public interface TestingDao {
-    List<Record> getAllRecords();
+    List<TaskRecord> getAllRecords();
 }

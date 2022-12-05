@@ -13,8 +13,7 @@ public class App {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(App.class);
         TestingService testingService = context.getBean(TestingService.class);
 
-//        testingService.printQuestionsWithAnswers();
-        testingService.beginTesting();
+        testingService.doTesting();
 
         context.close();
     }

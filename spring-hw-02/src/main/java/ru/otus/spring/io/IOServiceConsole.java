@@ -1,33 +1,37 @@
-package ru.otus.spring.connection;
+package ru.otus.spring.io;
 
-import org.springframework.stereotype.Component;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-@Component
-public class ConnectorImpl implements Connector {
+public class IOServiceConsole implements IOService {
 
     private final Scanner scanner;
     private final PrintStream printStream;
 
-    public ConnectorImpl(InputStream inputStream, PrintStream printStream) {
+    public IOServiceConsole(InputStream inputStream, PrintStream printStream) {
         this.printStream = printStream;
         this.scanner = new Scanner(inputStream);
     }
 
     @Override
-    public void sendText(String s) {
+    public void writeString(String s) {
         printStream.print(s);
     }
 
     @Override
-    public void sendLine(String s) {
+    public void writeLine(String s) {
         printStream.println(s);
     }
 
     @Override
-    public String getLine() {
+    public String readLine() {
         return scanner.nextLine();
+    }
+
+    @Override
+    public String readLineWithRequest(String s) {
+        writeString(s);
+        return readLine();
     }
 }

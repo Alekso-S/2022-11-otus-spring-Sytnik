@@ -5,7 +5,8 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.otus.spring.domain.Record;
+import ru.otus.spring.dto.TaskRecord;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
@@ -22,14 +23,14 @@ public class TestingDaoCsv implements TestingDao {
     }
 
     @Override
-    public List<Record> getAllRecords() {
+    public List<TaskRecord> getAllRecords() {
         try (InputStream resourceInputStream = getClass().getResourceAsStream("/"+csvResourceName)) {
-            HeaderColumnNameMappingStrategy<Record> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
-            mappingStrategy.setType(Record.class);
+            HeaderColumnNameMappingStrategy<TaskRecord> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
+            mappingStrategy.setType(TaskRecord.class);
 
             InputStreamReader inputStreamReader = new InputStreamReader(resourceInputStream);
 
-            CsvToBean<Record> csvToBean = new CsvToBeanBuilder<Record>(inputStreamReader)
+            CsvToBean<TaskRecord> csvToBean = new CsvToBeanBuilder<TaskRecord>(inputStreamReader)
                     .withMappingStrategy(mappingStrategy)
                     .build();
 

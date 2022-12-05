@@ -1,12 +1,9 @@
 package ru.otus.spring.service;
 
 /**
- * Сервис работы с тестированием
+ * Основной сервис тестирования
  */
 public interface TestingService {
-    void printQuestions();
 
-    void printQuestionsWithAnswers();
-
-    void beginTesting();
+    void doTesting();
 }

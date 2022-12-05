@@ -7,19 +7,19 @@ package ru.otus.spring.domain;
 public class Answer {
 
     private final String text;
-    private final boolean validity;
+    private final boolean valid;
 
-    public Answer(String text, boolean validity) {
+    public Answer(String text, boolean valid) {
         this.text = text;
-        this.validity = validity;
+        this.valid = valid;
     }
 
     public String getText() {
         return text;
     }
 
-    public boolean isValidity() {
-        return validity;
+    public boolean isValid() {
+        return valid;
     }
 
 }
