@@ -1,13 +1,15 @@
 package ru.otus.spring.dao;
 
-import ru.otus.spring.dto.TaskRecord;
+import ru.otus.spring.domain.Question;
+import ru.otus.spring.exceptions.QuestionsExistenceException;
 
 import java.util.List;
 
 /**
  * Интерфейс связи с источником данных.
- * Позволяет получить список записей
+ * Позволяет получить список вопросов
  */
 public interface TestingDao {
-    List<TaskRecord> getAllRecords();
+
+    List<Question> getQuestions() throws QuestionsExistenceException;
 }

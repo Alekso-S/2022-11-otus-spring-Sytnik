@@ -1,7 +1,5 @@
 package ru.otus.spring.dto;
 
-import ru.otus.spring.exceptions.DataValidityException;
-
 import java.util.Objects;
 
 /**
@@ -40,6 +38,10 @@ public class TaskRecord {
         return valid;
     }
 
+    public boolean isConsistent() {
+        return  id != null && question != null && answer != null && valid != null;
+    }
+
     @Override
     public String toString() {
         return "TaskRecord{" +
@@ -48,11 +50,6 @@ public class TaskRecord {
                 ", answer='" + answer + '\'' +
                 ", validity=" + valid +
                 '}';
-    }
-
-    public void checkValidity() {
-        if (id == null || question == null || answer == null || valid == null)
-            throw new DataValidityException("Error during reading data from source file");
     }
 
     @Override

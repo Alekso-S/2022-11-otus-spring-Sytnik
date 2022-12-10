@@ -2,11 +2,11 @@ package ru.otus.spring.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.spring.dto.TaskRecord;
+import ru.otus.spring.domain.Answer;
+import ru.otus.spring.domain.Question;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 @DisplayName("Объект связи с данными")
@@ -14,22 +14,24 @@ class TestingDaoCsvTest {
 
     private final String csvFileName = "questions.csv";
 
-    private final static int RECORDS_COUNT = 4;
-    private final static List<TaskRecord> TASK_RECORDS = List.of(
-            new TaskRecord(1, "Some question 1", "Some answer 1 to question 1", true),
-            new TaskRecord(1, "Some question 1", "Some answer 2 to question 1", false),
-            new TaskRecord(2, "Some question 2", "Some answer 1 to question 2", false),
-            new TaskRecord(2, "Some question 2", "Some answer 2 to question 2", true)
+    private final static List<Question> QUESTIONS = List.of(
+            new Question("Some question 1", List.of(
+                    new Answer("Some answer 1 to question 1", true),
+                    new Answer("Some answer 2 to question 1", false)
+            )),
+            new Question("Some question 2", List.of(
+                    new Answer("Some answer 1 to question 2", false),
+                    new Answer("Some answer 2 to question 2", true)
+            ))
     );
 
-    @DisplayName("должен вернуть список записей")
+    @DisplayName("должен вернуть список вопросов")
     @Test
-    void getAllRecords() {
+    void getQuestions() {
         TestingDao testingDao = new TestingDaoCsv(csvFileName);
 
-        List<TaskRecord> taskRecords = testingDao.getAllRecords();
+        List<Question> questions = testingDao.getQuestions();
 
-        assertEquals(RECORDS_COUNT, taskRecords.size());
-        assertIterableEquals(TASK_RECORDS, taskRecords);
+        assertIterableEquals(QUESTIONS, questions);
     }
 }
