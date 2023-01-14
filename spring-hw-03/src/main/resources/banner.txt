@@ -1,0 +1,7 @@
+${AnsiColor.CYAN}   ___    _____   _   _   ____   ${AnsiColor.GREEN}   ____                   _
+${AnsiColor.CYAN}  / _ \  |_   _| | | | | / ___|  ${AnsiColor.GREEN}  / ___|   _ __    _ __  (_)  _ __     __ _
+${AnsiColor.CYAN} | | | |   | |   | | | | \___ \  ${AnsiColor.GREEN}  \___ \  | '_ \  | '__| | | | '_ \   / _` |
+${AnsiColor.CYAN} | |_| |   | |   | |_| |  ___) | ${AnsiColor.GREEN}   ___) | | |_) | | |    | | | | | | | (_| |
+${AnsiColor.CYAN}  \___/    |_|    \___/  |____/  ${AnsiColor.GREEN}  |____/  | .__/  |_|    |_| |_| |_|  \__, |
+${AnsiColor.CYAN}                                 ${AnsiColor.GREEN}          |_|                         |___/
+${AnsiColor.WHITE}
