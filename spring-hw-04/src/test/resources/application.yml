@@ -1,0 +1,14 @@
+application:
+  csv-file-name:
+    en: questions.csv
+    ru: questions.csv
+  pass-coefficient: 0.6
+  locale: en
+
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  shell:
+    interactive:
+      enabled: false
