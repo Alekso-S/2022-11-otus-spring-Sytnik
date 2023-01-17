@@ -1,5 +1,6 @@
 package ru.otus.spring.service;
 
+import org.springframework.shell.Availability;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.converter.QuestionConverter;
 import ru.otus.spring.dao.TestingDao;
@@ -8,6 +9,7 @@ import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.Student;
 import ru.otus.spring.domain.TestingInstance;
 import ru.otus.spring.exception.QuestionsExistenceException;
+import ru.otus.spring.wrapper.MessageSourceWrapper;
 
 import java.util.List;
 
@@ -18,17 +20,20 @@ public class TestingServiceImpl implements TestingService {
     private final StudentService studentService;
     private final ResultService resultService;
     private final MessageService messageService;
+    private final MessageSourceWrapper messageSourceWrapper;
 
     Student student;
 
     public TestingServiceImpl(TestingDao testingDao,
                               StudentService studentService,
                               ResultService resultService,
-                              MessageService messageService) {
+                              MessageService messageService,
+                              MessageSourceWrapper messageSourceWrapper) {
         this.testingDao = testingDao;
         this.studentService = studentService;
         this.resultService = resultService;
         this.messageService = messageService;
+        this.messageSourceWrapper = messageSourceWrapper;
     }
 
     @Override
@@ -54,13 +59,17 @@ public class TestingServiceImpl implements TestingService {
     }
 
     @Override
-    public boolean checkTestingAvailability() {
+    public Availability getTestingAvailability() {
         if (student != null) {
-            return true;
+            return Availability.available();
         } else {
-            messageService.Send("student-name-missed");
-            return false;
+            return Availability.unavailable(messageSourceWrapper.getMessage("student-name-missed"));
         }
+    }
+
+    @Override
+    public void showInviteMessage() {
+        messageService.send("student-name-request");
     }
 
     private void doTesting(TestingInstance testingInstance) {
@@ -90,23 +99,23 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private void printTestLoadErrorMessage() {
-        messageService.Send("test-load-problem");
+        messageService.send("test-load-problem");
     }
 
     private void printTestStartMessage() {
-        messageService.SendNewLine("test-start");
+        messageService.sendNewLine("test-start");
     }
 
     private void printQuestionWithAnswers(Question question, int order, int count) {
-        messageService.SendNewLine("test-question-number", order, count);
-        messageService.SendNativeText(QuestionConverter.toText(question));
+        messageService.sendNewLine("test-question-number", order, count);
+        messageService.sendNativeText(QuestionConverter.toText(question));
     }
 
     private String askForAnswer(int answersCnt) {
-        return messageService.SendNewLineWithRequest("test-answer-request", answersCnt);
+        return messageService.sendNewLineWithRequest("test-answer-request", answersCnt);
     }
 
     private void printInvalidAnswerMessage(String typedString) {
-        messageService.Send("test-invalid-answer", typedString);
+        messageService.send("test-invalid-answer", typedString);
     }
 }

@@ -1,5 +1,7 @@
 package ru.otus.spring.service;
 
+import org.springframework.shell.Availability;
+
 /**
  * Основной сервис тестирования
  */
@@ -9,5 +11,7 @@ public interface TestingService {
 
     void run();
 
-    boolean checkTestingAvailability();
+    Availability getTestingAvailability();
+
+    void showInviteMessage();
 }

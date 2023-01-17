@@ -51,7 +51,7 @@ class ResultServiceImplTest {
     void shouldShowPointsCnt() {
         resultService.showResult(testingInstance);
 
-        verify(messageService, times(1)).Send(eq("test-points-cnt"), any());
+        verify(messageService, times(1)).send(eq("test-points-cnt"), any());
     }
 
     @DisplayName("выводит результат тестирования")
@@ -59,18 +59,18 @@ class ResultServiceImplTest {
     void shouldShowResult() {
         resultService.showResult(testingInstance);
 
-        verify(messageService, times(1)).Send("test-result-pass");
+        verify(messageService, times(1)).send("test-result-pass");
     }
 
     @DisplayName("выводит правильные варианты ответов")
     @Test
     void shouldShowValidAnswers() {
-        when(messageService.SendNewLineWithRequest("test-show-answers-request")).thenReturn("show");
+        when(messageService.sendNewLineWithRequest("test-show-answers-request")).thenReturn("show");
 
         resultService.showValidAnswers(testingInstance);
 
         verify(testingInstance, times(1)).getQuestions();
-        verify(messageService, times(6)).SendNativeText(any());
+        verify(messageService, times(6)).sendNativeText(any());
     }
 
     private List<Question> getQuestions() {

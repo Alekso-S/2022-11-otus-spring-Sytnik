@@ -21,13 +21,12 @@ public class Commands {
     }
 
     @ShellMethod(key = "start", value = "Start testing")
-    @ShellMethodAvailability(value = "isTestingAvailable")
+    @ShellMethodAvailability(value = "getTestingAvailable")
     public void startTesting() {
         testingService.run();
     }
 
-    private Availability isTestingAvailable() {
-        return testingService.checkTestingAvailability() ?
-                Availability.available() : Availability.unavailable("");
+    private Availability getTestingAvailable() {
+        return testingService.getTestingAvailability();
     }
 }

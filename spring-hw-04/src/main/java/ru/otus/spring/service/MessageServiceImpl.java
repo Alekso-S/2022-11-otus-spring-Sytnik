@@ -10,33 +10,34 @@ public class MessageServiceImpl implements MessageService {
     private final IOService ioService;
     private final MessageSourceWrapper messageSourceWrapper;
 
-    public MessageServiceImpl(IOService ioService, MessageSourceWrapper messageSourceWrapper) {
+    public MessageServiceImpl(IOService ioService,
+                              MessageSourceWrapper messageSourceWrapper) {
         this.ioService = ioService;
         this.messageSourceWrapper = messageSourceWrapper;
     }
 
     @Override
-    public void Send(String code, Object... objects) {
+    public void send(String code, Object... objects) {
         ioService.writeLine(messageSourceWrapper.getMessage(code, objects));
     }
 
     @Override
-    public void SendNewLine(String code, Object... objects) {
+    public void sendNewLine(String code, Object... objects) {
         ioService.writeLine("\n" + messageSourceWrapper.getMessage(code, objects));
     }
 
     @Override
-    public void SendNativeText(String message) {
+    public void sendNativeText(String message) {
         ioService.writeLine(message);
     }
 
     @Override
-    public String SendWithRequest(String code, Object... objects) {
+    public String sendWithRequest(String code, Object... objects) {
         return ioService.writeLineWithRequest(messageSourceWrapper.getMessage(code, objects) + ": ");
     }
 
     @Override
-    public String SendNewLineWithRequest(String code, Object... objects) {
+    public String sendNewLineWithRequest(String code, Object... objects) {
         return ioService.writeLineWithRequest("\n" + messageSourceWrapper.getMessage(code, objects) + ": ");
     }
 }

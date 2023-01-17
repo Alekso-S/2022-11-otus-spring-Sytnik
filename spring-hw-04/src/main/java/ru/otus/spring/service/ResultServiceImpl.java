@@ -54,22 +54,22 @@ public class ResultServiceImpl implements ResultService {
     }
 
     private void printPointsCnt(String fullName, int validAnswersCnt, int questionsCnt) {
-        messageService.Send("test-points-cnt", fullName, validAnswersCnt, questionsCnt);
+        messageService.send("test-points-cnt", fullName, validAnswersCnt, questionsCnt);
     }
 
     private void printTestResult(boolean isPassed) {
-        messageService.Send(isPassed ? "test-result-pass" : "test-result-fail");
+        messageService.send(isPassed ? "test-result-pass" : "test-result-fail");
     }
 
     private boolean askIfToShowAnswers() {
-        return messageService.SendNewLineWithRequest("test-show-answers-request").equals("show");
+        return messageService.sendNewLineWithRequest("test-show-answers-request").equals("show");
     }
 
     private void printValidAnswers(List<Question> questions) {
         for (Question question : questions) {
-            messageService.SendNativeText("- " + question.getText());
+            messageService.sendNativeText("- " + question.getText());
             for (Answer answer : question.getAnswers()) {
-                messageService.SendNativeText("|- (" + (answer.isValid() ? "+" : "-") + ") " + answer.getText());
+                messageService.sendNativeText("|- (" + (answer.isValid() ? "+" : "-") + ") " + answer.getText());
             }
         }
     }

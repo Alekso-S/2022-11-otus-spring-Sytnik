@@ -50,7 +50,7 @@ class TestingServiceImplTest {
     public void setUp() {
         lenient().when(testingDao.getQuestions()).thenReturn(getQuestions());
         lenient().when(studentService.requestStudent()).thenReturn(new Student(STUDENT_NAME, STUDENT_SURNAME));
-        lenient().when(messageService.SendNewLineWithRequest("test-answer-request",getQuestions().size()))
+        lenient().when(messageService.sendNewLineWithRequest("test-answer-request",getQuestions().size()))
                         .thenReturn("1", "2");
     }
 
@@ -69,7 +69,7 @@ class TestingServiceImplTest {
 
         testingService.run();
 
-        verify(messageService, times(1)).Send("test-load-problem");
+        verify(messageService, times(1)).send("test-load-problem");
     }
 
     @DisplayName("вывести вопросы с вариантами ответов")
@@ -79,7 +79,7 @@ class TestingServiceImplTest {
 
         List<Question> questions = getQuestions();
         for (Question question : questions) {
-            verify(messageService, times(1)).SendNativeText(QuestionConverter.toText(question));
+            verify(messageService, times(1)).sendNativeText(QuestionConverter.toText(question));
         }
     }
 
@@ -89,19 +89,19 @@ class TestingServiceImplTest {
         testingService.run();
 
         verify(messageService, times(2))
-                .SendNewLineWithRequest("test-answer-request", 2);
+                .sendNewLineWithRequest("test-answer-request", 2);
     }
 
     @DisplayName("запросить ввод повторно при недопустимом варианте ответа на вопрос")
     @Test
     void shouldRequestAnswersToQuestionsRepeatedly() {
-        lenient().when(messageService.SendNewLineWithRequest("test-answer-request",getQuestions().size()))
+        lenient().when(messageService.sendNewLineWithRequest("test-answer-request",getQuestions().size()))
                 .thenReturn("1", "3", "2");
 
         testingService.run();
 
         verify(messageService, times(3))
-                .SendNewLineWithRequest("test-answer-request", 2);
+                .sendNewLineWithRequest("test-answer-request", 2);
     }
 
     @DisplayName("вывести результат тестирования")

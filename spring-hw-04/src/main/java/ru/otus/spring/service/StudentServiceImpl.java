@@ -24,17 +24,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private String askForName() {
-        return messageService.SendWithRequest("student-name-request");
+        return messageService.sendWithRequest("student-name-request");
     }
 
     @Override
     public Student getStudentByName(String fullName) {
         if (!fullName.matches(".+ .+")) {
-            messageService.Send("student-name-request");
+            messageService.send("student-name-request");
             return null;
         }
 
-        messageService.Send("student-name-set");
+        messageService.send("student-name-set");
         return new Student(fullName.split(" ")[0], fullName.split(" ")[1]);
     }
 }

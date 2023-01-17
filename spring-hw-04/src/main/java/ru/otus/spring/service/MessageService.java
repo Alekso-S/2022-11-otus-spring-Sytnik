@@ -1,13 +1,13 @@
 package ru.otus.spring.service;
 
 public interface MessageService {
-    void Send(String code, Object... objects);
+    void send(String code, Object... objects);
 
-    void SendNewLine(String code, Object... objects);
+    void sendNewLine(String code, Object... objects);
 
-    void SendNativeText(String message);
+    void sendNativeText(String message);
 
-    String SendWithRequest(String code, Object... objects);
+    String sendWithRequest(String code, Object... objects);
 
-    String SendNewLineWithRequest(String code, Object... objects);
+    String sendNewLineWithRequest(String code, Object... objects);
 }
