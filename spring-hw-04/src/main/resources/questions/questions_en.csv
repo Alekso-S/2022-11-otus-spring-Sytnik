@@ -1,0 +1,22 @@
+id,question,answer,valid
+1,What registered jack is used to terminate the standard network patch cable?,RJ-99,false
+1,What registered jack is used to terminate the standard network patch cable?,RJ-2,false
+1,What registered jack is used to terminate the standard network patch cable?,RJ-11,false
+1,What registered jack is used to terminate the standard network patch cable?,RJ-45,true
+2,Is a BSOD a hardware or software problem?,Hardware,false
+2,Is a BSOD a hardware or software problem?,Software,false
+2,Is a BSOD a hardware or software problem?,Mostly Hardware,false
+2,Is a BSOD a hardware or software problem?,Mostly Software,false
+2,Is a BSOD a hardware or software problem?,Either Is Equally Possible,true
+3,If you wanted to add a user to a Domain where would you add them?,Domain List,false
+3,If you wanted to add a user to a Domain where would you add them?,Registry,false
+3,If you wanted to add a user to a Domain where would you add them?,Active Directory,true
+3,If you wanted to add a user to a Domain where would you add them?,Directory,false
+4,What is a Codec most commonly used for?,Decoding Passwords,false
+4,What is a Codec most commonly used for?,Decoding Audio/Video Stream,true
+4,What is a Codec most commonly used for?,Encrypting Data,false
+4,What is a Codec most commonly used for?,Saving Contact Information,false
+5,RDP stands for?,Removable Disk Placement,false
+5,RDP stands for?,Remote Desktop Protocol,true
+5,RDP stands for?,Right Desktop Placeholder,false
+5,RDP stands for?,Nothing RDP is not an acronym,false

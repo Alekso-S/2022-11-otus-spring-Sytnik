@@ -1,0 +1,14 @@
+application:
+  csv-file-name:
+    en: questions/questions_en.csv
+    ru: questions/questions_ru.csv
+  pass-coefficient: 0.6
+  locale: ru
+
+spring:
+  messages:
+    basename: "messages"
+    encoding: "UTF-8"
+  output:
+    ansi:
+      enabled: ALWAYS
