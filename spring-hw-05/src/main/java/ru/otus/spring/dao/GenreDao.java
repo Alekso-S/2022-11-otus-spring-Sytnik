@@ -20,7 +20,7 @@ public interface GenreDao {
 
     void delByName(String name);
 
-    void addGenreForBook(long bookId, long genreId);
+    void addGenresForBook(long bookId, List<Genre> genres);
 
     void delGenresForBook(long id);
 }

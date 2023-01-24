@@ -2,12 +2,10 @@ package ru.otus.spring.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
@@ -17,9 +15,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DAO для работы с авторами должен")
-@Import(AuthorDaoJdbc.class)
 @JdbcTest
-@ExtendWith(SpringExtension.class)
+@Import(AuthorDaoJdbc.class)
 class AuthorDaoJdbcTest {
 
     @Autowired

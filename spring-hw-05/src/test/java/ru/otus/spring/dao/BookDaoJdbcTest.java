@@ -2,24 +2,24 @@ package ru.otus.spring.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Genre;
 import ru.otus.spring.exception.BookNotFoundEx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DAO для работы с книгами должен")
-@Import(BookDaoJdbc.class)
 @JdbcTest
-@ExtendWith(SpringExtension.class)
+@Import(BookDaoJdbc.class)
 class BookDaoJdbcTest {
 
     @Autowired
@@ -30,18 +30,25 @@ class BookDaoJdbcTest {
     private final static long BOOK_3_ID = 3;
     private final static long BOOK_4_ID = 4;
     private final static long BOOK_5_ID = 5;
-    private final static long BOOK_1_AUTHOR_ID = 1;
-    private final static long BOOK_2_AUTHOR_ID = 1;
-    private final static long BOOK_3_AUTHOR_ID = 2;
-    private final static long BOOK_4_AUTHOR_ID = 2;
-    private final static long BOOK_5_AUTHOR_ID = 1;
     private final static String BOOK_1_NAME = "Book 1";
     private final static String BOOK_2_NAME = "Book 2";
     private final static String BOOK_3_NAME = "Book 3";
     private final static String BOOK_4_NAME = "Book 4";
     private final static String BOOK_5_NAME = "Book 5";
-    private final static long GENRE_1_ID = 1;
+    private final static Author BOOK_1_AUTHOR = new Author(1, "Author 1");
+    private final static Author BOOK_2_AUTHOR = new Author(1, "Author 1");
+    private final static Author BOOK_3_AUTHOR = new Author(2, "Author 2");
+    private final static Author BOOK_4_AUTHOR = new Author(2, "Author 2");
+    private final static Author BOOK_5_AUTHOR = new Author(1, "Author 1");
     private final static long AUTHOR_1_ID = 1;
+    private final static long GENRE_1_ID = 1;
+    private final static long GENRE_2_ID = 2;
+    private final static long GENRE_3_ID = 3;
+    private final static long GENRE_4_ID = 4;
+    private final static String GENRE_1_NAME = "Genre 1";
+    private final static String GENRE_2_NAME = "Genre 2";
+    private final static String GENRE_3_NAME = "Genre 3";
+    private final static String GENRE_4_NAME = "Genre 4";
 
     @DisplayName("возвращать корректное число записей")
     @Test
@@ -84,7 +91,7 @@ class BookDaoJdbcTest {
     @Test
     void shouldCreateBook() throws BookNotFoundEx {
         assertThrowsExactly(BookNotFoundEx.class, () -> bookDaoJdbc.getByName(BOOK_5_NAME));
-        bookDaoJdbc.add(new Book(0, BOOK_5_AUTHOR_ID, BOOK_5_NAME));
+        bookDaoJdbc.add(new Book(0, BOOK_5_NAME, BOOK_5_AUTHOR, new ArrayList<>()));
         assertEquals(BOOK_5_NAME, bookDaoJdbc.getById(BOOK_5_ID).getName());
     }
 
@@ -92,7 +99,7 @@ class BookDaoJdbcTest {
     @DirtiesContext
     @Test
     void shouldDeleteAuthor() {
-        bookDaoJdbc.add(new Book(0, BOOK_5_AUTHOR_ID, BOOK_5_NAME));
+        bookDaoJdbc.add(new Book(0, BOOK_5_NAME, BOOK_5_AUTHOR, new ArrayList<>()));
         assertDoesNotThrow(() -> bookDaoJdbc.getByName(BOOK_5_NAME));
         bookDaoJdbc.delByName(BOOK_5_NAME);
         assertThrowsExactly(BookNotFoundEx.class, () -> bookDaoJdbc.getByName(BOOK_5_NAME));
@@ -100,30 +107,36 @@ class BookDaoJdbcTest {
 
     private List<Book> getAllBooks() {
         List<Book> books = new ArrayList<>();
-        books.add(new Book(BOOK_1_ID, BOOK_1_AUTHOR_ID, BOOK_1_NAME));
-        books.add(new Book(BOOK_2_ID, BOOK_2_AUTHOR_ID, BOOK_2_NAME));
-        books.add(new Book(BOOK_3_ID, BOOK_3_AUTHOR_ID, BOOK_3_NAME));
-        books.add(new Book(BOOK_4_ID, BOOK_4_AUTHOR_ID, BOOK_4_NAME));
+        books.add(new Book(BOOK_1_ID, BOOK_1_NAME, BOOK_1_AUTHOR, List.of(
+                new Genre(GENRE_1_ID, GENRE_1_NAME),
+                new Genre(GENRE_2_ID, GENRE_2_NAME)))
+        );
+        books.add(new Book(BOOK_2_ID, BOOK_2_NAME, BOOK_2_AUTHOR, List.of(
+                new Genre(GENRE_2_ID, GENRE_2_NAME),
+                new Genre(GENRE_3_ID, GENRE_3_NAME)))
+        );
+        books.add(new Book(BOOK_3_ID, BOOK_3_NAME, BOOK_3_AUTHOR, List.of(
+                new Genre(GENRE_3_ID, GENRE_3_NAME),
+                new Genre(GENRE_4_ID, GENRE_4_NAME)))
+        );
+        books.add(new Book(BOOK_4_ID, BOOK_4_NAME, BOOK_4_AUTHOR, List.of(
+                new Genre(GENRE_4_ID, GENRE_4_NAME),
+                new Genre(GENRE_1_ID, GENRE_1_NAME)))
+        );
         return books;
     }
 
     private List<Book> getBooksByGenreId(long genreId) {
-        if (genreId != GENRE_1_ID) {
-            throw new RuntimeException("Unsupported genre id");
-        }
-        List<Book> books = new ArrayList<>();
-        books.add(new Book(BOOK_1_ID, BOOK_1_AUTHOR_ID, BOOK_1_NAME));
-        books.add(new Book(BOOK_4_ID, BOOK_4_AUTHOR_ID, BOOK_4_NAME));
-        return books;
+        return getAllBooks()
+                .stream()
+                .filter((x) -> x.getGenres().stream().anyMatch((y) -> y.getId() == genreId))
+                .collect(Collectors.toList());
     }
 
     private List<Book> getBooksByAuthorId(long authorId) {
-        if (authorId != AUTHOR_1_ID) {
-            throw new RuntimeException("Unsupported author id");
-        }
-        List<Book> books = new ArrayList<>();
-        books.add(new Book(BOOK_1_ID, BOOK_1_AUTHOR_ID, BOOK_1_NAME));
-        books.add(new Book(BOOK_2_ID, BOOK_2_AUTHOR_ID, BOOK_2_NAME));
-        return books;
+        return getAllBooks()
+                .stream()
+                .filter((x) -> x.getAuthor().getId() == authorId)
+                .collect(Collectors.toList());
     }
 }

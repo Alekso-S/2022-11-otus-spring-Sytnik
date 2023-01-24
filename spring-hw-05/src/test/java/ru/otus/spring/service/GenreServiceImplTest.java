@@ -3,15 +3,14 @@ package ru.otus.spring.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.converter.GenreConverter;
 import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.dao.GenreDao;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.exception.BookNotFoundEx;
@@ -23,10 +22,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@DisplayName("Сервис работы с авторами должен")
+@DisplayName("Сервис работы с жанрами должен")
+@SpringBootTest
 @Import(GenreServiceImpl.class)
-@JdbcTest
-@ExtendWith(SpringExtension.class)
 class GenreServiceImplTest {
 
     @Autowired
@@ -47,8 +45,8 @@ class GenreServiceImplTest {
     private final static String GENRE_4_NAME = "Genre 4";
     private final static String GENRE_5_NAME = "Genre 5";
     private final static long BOOK_1_ID = 1;
-    private final static long BOOK_1_AUTHOR_ID = 1;
     private final static String BOOK_1_NAME = "Book 1";
+    private final static Author BOOK_1_AUTHOR = new Author(1, "Author 1");
     private final static String SUCCESSFUL_ADD_MESSAGE = "Genre added";
     private final static String SUCCESSFUL_DEL_MESSAGE = "Genre deleted";
 
@@ -60,7 +58,7 @@ class GenreServiceImplTest {
         when(genreDao.getByName(GENRE_1_NAME)).thenReturn(new Genre(GENRE_1_ID, GENRE_1_NAME));
         when(genreDao.getByName(GENRE_5_NAME)).thenThrow(GenreNotFoundEx.class);
         when(genreDao.getByBookId(BOOK_1_ID)).thenReturn(getGenresByBookId(BOOK_1_ID));
-        when(bookDao.getByName(BOOK_1_NAME)).thenReturn(new Book(BOOK_1_ID, BOOK_1_AUTHOR_ID, BOOK_1_NAME));
+        when(bookDao.getByName(BOOK_1_NAME)).thenReturn(new Book(BOOK_1_ID, BOOK_1_NAME, BOOK_1_AUTHOR, new ArrayList<>()));
     }
 
     @DisplayName("возвращать корректное число записей")

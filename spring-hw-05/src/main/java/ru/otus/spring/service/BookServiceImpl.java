@@ -16,6 +16,9 @@ import ru.otus.spring.exception.AuthorNotFoundEx;
 import ru.otus.spring.exception.BookNotFoundEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
@@ -34,7 +37,6 @@ public class BookServiceImpl implements BookService {
     public String showAllBooks() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Book book : bookDao.getAll()) {
-            fillBookInfo(book);
             stringBuilder.append(BookConverter.toString(book)).append('\n');
         }
         return stringBuilder.toString();
@@ -46,7 +48,6 @@ public class BookServiceImpl implements BookService {
         if (book == null) {
             return "Book not found";
         }
-        fillBookInfo(book);
         return BookConverter.toString(book);
     }
 
@@ -56,7 +57,6 @@ public class BookServiceImpl implements BookService {
         if (book == null) {
             return "Book not found";
         }
-        fillBookInfo(book);
         return BookConverter.toString(book);
     }
 
@@ -64,7 +64,6 @@ public class BookServiceImpl implements BookService {
     public String showBooksByGenreId(Long genreId) {
         StringBuilder stringBuilder = new StringBuilder();
         for (Book book : bookDao.getByGenreId(genreId)) {
-            fillBookInfo(book);
             stringBuilder.append(BookConverter.toString(book)).append('\n');
         }
         return stringBuilder.toString();
@@ -78,7 +77,6 @@ public class BookServiceImpl implements BookService {
         }
         StringBuilder stringBuilder = new StringBuilder();
         for (Book book : bookDao.getByGenreId(genre.getId())) {
-            fillBookInfo(book);
             stringBuilder.append(BookConverter.toString(book)).append('\n');
         }
         return stringBuilder.toString();
@@ -91,8 +89,9 @@ public class BookServiceImpl implements BookService {
             return "Book already exists";
         }
         Author author = prepareAuthor(authorName);
-        Book book = bookDao.add(new Book(0, author.getId(), name));
-        addGenres(book, genreNames);
+        List<Genre> genres = prepareGenres(genreNames);
+        Book book = bookDao.add(new Book(0, name, author, genres));
+        genreDao.addGenresForBook(book.getId(), book.getGenres());
         return "Book added";
     }
 
@@ -117,16 +116,16 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    private void addGenres(Book book, String[] genreNames) {
-        Genre genre;
+    private List<Genre> prepareGenres(String[] genreNames) {
+        List<Genre> genres = new ArrayList<>();
         for (String genreName : genreNames) {
             try {
-                genre = genreDao.getByName(genreName);
+                genres.add(genreDao.getByName(genreName));
             } catch (GenreNotFoundEx e) {
-                genre = genreDao.add(new Genre(0, genreName));
+                genres.add(genreDao.add(new Genre(0, genreName)));
             }
-            genreDao.addGenreForBook(book.getId(), genre.getId());
         }
+        return genres;
     }
 
     private Author prepareAuthor(String authorName) {
@@ -145,15 +144,6 @@ public class BookServiceImpl implements BookService {
         } catch (BookNotFoundEx ignored) {
         }
         return true;
-    }
-
-    private void fillBookInfo(Book book) {
-        try {
-            book.setAuthor(authorDao.getById(book.getAuthorId()));
-        } catch (AuthorNotFoundEx e) {
-            book.setAuthor(new Author(0, "Missing author"));
-        }
-        book.setGenres(genreDao.getByBookId(book.getId()));
     }
 
     private Book getBookById(long id) {

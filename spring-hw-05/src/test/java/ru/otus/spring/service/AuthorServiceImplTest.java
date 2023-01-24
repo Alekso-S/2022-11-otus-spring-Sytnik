@@ -3,15 +3,14 @@ package ru.otus.spring.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.converter.AuthorConverter;
 import ru.otus.spring.dao.AuthorDao;
 import ru.otus.spring.dao.BookDao;
+import ru.otus.spring.dao.GenreDao;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
@@ -22,9 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @DisplayName("Сервис работы с авторами должен")
+@SpringBootTest
 @Import(AuthorServiceImpl.class)
-@JdbcTest
-@ExtendWith(SpringExtension.class)
 class AuthorServiceImplTest {
 
     @Autowired
@@ -32,6 +30,8 @@ class AuthorServiceImplTest {
 
     @MockBean
     private AuthorDao authorDao;
+    @MockBean
+    private GenreDao genreDao;
     @MockBean
     private BookDao bookDao;
 

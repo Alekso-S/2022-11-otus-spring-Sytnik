@@ -2,12 +2,10 @@ package ru.otus.spring.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
@@ -17,9 +15,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DAO для работы с жанрами должен")
-@Import(GenreDaoJdbc.class)
 @JdbcTest
-@ExtendWith(SpringExtension.class)
+@Import(GenreDaoJdbc.class)
 class GenreDaoJdbcTest {
 
     @Autowired
@@ -90,7 +87,7 @@ class GenreDaoJdbcTest {
     @Test
     void shouldAddGenresForBook() {
         List<Genre> genres = getGenresByBookId(BOOK_1_ID);
-        genreDaoJdbc.addGenreForBook(BOOK_1_ID, GENRE_3_ID);
+        genreDaoJdbc.addGenresForBook(BOOK_1_ID, List.of(new Genre(GENRE_3_ID, GENRE_3_NAME)));
         genres.add(new Genre(GENRE_3_ID, GENRE_3_NAME));
         assertIterableEquals(genres, genreDaoJdbc.getByBookId(BOOK_1_ID));
     }

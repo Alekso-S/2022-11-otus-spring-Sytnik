@@ -77,9 +77,11 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
-    public void addGenreForBook(long bookId, long genreId) {
+    public void addGenresForBook(long bookId, List<Genre> genres) {
         String query = "INSERT INTO books_genres (book_id,genre_id) VALUES (:book_id,:genre_id)";
-        jdbcOperations.update(query, Map.of("book_id", bookId, "genre_id", genreId));
+        for (Genre genre : genres) {
+            jdbcOperations.update(query, Map.of("book_id", bookId, "genre_id", genre.getId()));
+        }
     }
 
     @Override
