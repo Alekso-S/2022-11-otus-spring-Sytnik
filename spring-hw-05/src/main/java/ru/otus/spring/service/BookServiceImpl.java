@@ -98,12 +98,11 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public String delBookByName(String name) {
-        Book book = getBookByName(name);
-        if (book == null) {
+        try {
+            bookDao.delByName(name);
+        } catch (BookNotFoundEx e) {
             return "Book not found";
         }
-        genreDao.delGenresForBook(book.getId());
-        bookDao.delByName(book.getName());
         return "Book deleted";
     }
 

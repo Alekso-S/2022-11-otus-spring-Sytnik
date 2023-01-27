@@ -36,6 +36,16 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
+    public List<Genre> getAllUsed() {
+        String query = "" +
+                "SELECT     id " +
+                "       ,   name " +
+                "FROM       genres " +
+                "WHERE      id IN (SELECT genre_id FROM books_genres)";
+        return jdbcOperations.query(query, new GenreDaoJdbc.GenreMapper());
+    }
+
+    @Override
     public Genre getById(long id) throws GenreNotFoundEx {
         String query = "SELECT id, name FROM genres WHERE id=:id";
         try {
@@ -93,9 +103,8 @@ public class GenreDaoJdbc implements GenreDao {
     private static class GenreMapper implements RowMapper<Genre> {
         @Override
         public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-            long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            return new Genre(id, name);
+            return new Genre(resultSet.getLong("id"),
+                    resultSet.getString("name"));
         }
     }
 }

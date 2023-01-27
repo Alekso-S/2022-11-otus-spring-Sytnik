@@ -20,5 +20,5 @@ public interface BookDao {
 
     Book add(Book book);
 
-    void delByName(String name);
+    void delByName(String name) throws BookNotFoundEx;
 }

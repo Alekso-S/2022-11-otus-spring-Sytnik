@@ -10,6 +10,8 @@ public interface GenreDao {
 
     List<Genre> getAll();
 
+    List<Genre> getAllUsed();
+
     Genre getById(long id) throws GenreNotFoundEx;
 
     Genre getByName(String name) throws GenreNotFoundEx;

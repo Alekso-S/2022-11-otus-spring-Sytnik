@@ -1,9 +1,11 @@
 package ru.otus.spring.dao;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @DisplayName("DAO для работы с книгами должен")
 @JdbcTest
@@ -24,6 +27,8 @@ class BookDaoJdbcTest {
 
     @Autowired
     private BookDaoJdbc bookDaoJdbc;
+    @MockBean
+    private GenreDao genreDao;
 
     private final static long BOOK_1_ID = 1;
     private final static long BOOK_2_ID = 2;
@@ -49,6 +54,11 @@ class BookDaoJdbcTest {
     private final static String GENRE_2_NAME = "Genre 2";
     private final static String GENRE_3_NAME = "Genre 3";
     private final static String GENRE_4_NAME = "Genre 4";
+
+    @BeforeEach
+    void setUp() {
+        when(genreDao.getAllUsed()).thenReturn(getAllGenres());
+    }
 
     @DisplayName("возвращать корректное число записей")
     @Test
@@ -98,7 +108,7 @@ class BookDaoJdbcTest {
     @DisplayName("удалять книгу")
     @DirtiesContext
     @Test
-    void shouldDeleteAuthor() {
+    void shouldDeleteAuthor() throws BookNotFoundEx {
         bookDaoJdbc.add(new Book(0, BOOK_5_NAME, BOOK_5_AUTHOR, new ArrayList<>()));
         assertDoesNotThrow(() -> bookDaoJdbc.getByName(BOOK_5_NAME));
         bookDaoJdbc.delByName(BOOK_5_NAME);
@@ -120,8 +130,8 @@ class BookDaoJdbcTest {
                 new Genre(GENRE_4_ID, GENRE_4_NAME)))
         );
         books.add(new Book(BOOK_4_ID, BOOK_4_NAME, BOOK_4_AUTHOR, List.of(
-                new Genre(GENRE_4_ID, GENRE_4_NAME),
-                new Genre(GENRE_1_ID, GENRE_1_NAME)))
+                new Genre(GENRE_1_ID, GENRE_1_NAME),
+                new Genre(GENRE_4_ID, GENRE_4_NAME)))
         );
         return books;
     }
@@ -138,5 +148,14 @@ class BookDaoJdbcTest {
                 .stream()
                 .filter((x) -> x.getAuthor().getId() == authorId)
                 .collect(Collectors.toList());
+    }
+
+    private List<Genre> getAllGenres() {
+        List<Genre> genres = new ArrayList<>();
+        genres.add(new Genre(GENRE_1_ID, GENRE_1_NAME));
+        genres.add(new Genre(GENRE_2_ID, GENRE_2_NAME));
+        genres.add(new Genre(GENRE_3_ID, GENRE_3_NAME));
+        genres.add(new Genre(GENRE_4_ID, GENRE_4_NAME));
+        return genres;
     }
 }
