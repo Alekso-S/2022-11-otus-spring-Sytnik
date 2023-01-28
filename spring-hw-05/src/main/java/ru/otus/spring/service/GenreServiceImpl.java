@@ -10,8 +10,7 @@ import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.dao.GenreDao;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.exception.BookNotFoundEx;
-import ru.otus.spring.exception.GenreNotFoundEx;
+import ru.otus.spring.exception.*;
 
 @RequiredArgsConstructor
 @Service
@@ -94,14 +93,12 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public String delGenreByName(String name) {
-        Genre genre = getGenreByName(name);
-        if (genre == null) {
-            return "Genre not found";
-        }
-        if (bookDao.getByGenreId(genre.getId()).size() == 0) {
+        try {
             genreDao.delByName(name);
-        } else {
-            return "Books of this genre exists";
+        } catch (GenreHasRelationsEx e) {
+            return "Books by this genre exist";
+        } catch (GenreNotFoundEx e) {
+            return "Genre not found";
         }
         return "Genre deleted";
     }

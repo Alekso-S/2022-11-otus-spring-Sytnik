@@ -9,6 +9,7 @@ import ru.otus.spring.converter.AuthorConverter;
 import ru.otus.spring.dao.AuthorDao;
 import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.domain.Author;
+import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
 @RequiredArgsConstructor
@@ -67,25 +68,14 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public String delAuthorByName(String name) {
-        Author author = getAuthorByName(name);
-        if (author == null) {
+        try {
+            authorDao.delByName(name);
+        } catch (AuthorHasRelationsEx e) {
+            return "Books by this author exist";
+        } catch (AuthorNotFoundEx e) {
             return "Author not found";
         }
-        if (bookDao.getByAuthorId(author.getId()).size() == 0) {
-            authorDao.delByName(name);
-        } else {
-            return "Books by this author exists";
-        }
         return "Author deleted";
-    }
-
-    private Author getAuthorByName(String name) {
-        try {
-            return authorDao.getByName(name);
-        } catch (AuthorNotFoundEx e) {
-            logger.warn("Author with name={} was not found", name);
-            return null;
-        }
     }
 
     private boolean verifyAuthorAbsence(String name) {

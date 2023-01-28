@@ -1,6 +1,7 @@
 package ru.otus.spring.dao;
 
 import ru.otus.spring.domain.Genre;
+import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
 import java.util.List;
@@ -20,9 +21,9 @@ public interface GenreDao {
 
     Genre add(Genre genre);
 
-    void delByName(String name);
+    void delByName(String name) throws GenreHasRelationsEx, GenreNotFoundEx;
 
     void addGenresForBook(long bookId, List<Genre> genres);
 
-    void delGenresForBook(long id);
+    void delGenresByBookName(String bookName);
 }

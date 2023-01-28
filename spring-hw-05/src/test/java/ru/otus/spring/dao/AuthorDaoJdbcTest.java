@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
+import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ class AuthorDaoJdbcTest {
     @DisplayName("удалять автора")
     @DirtiesContext
     @Test
-    void shouldDeleteAuthor() {
+    void shouldDeleteAuthor() throws AuthorHasRelationsEx, AuthorNotFoundEx {
         authorDaoJdbc.add(new Author(0, AUTHOR_3_NAME));
         assertDoesNotThrow(() -> authorDaoJdbc.getByName(AUTHOR_3_NAME));
         authorDaoJdbc.delByName(AUTHOR_3_NAME);

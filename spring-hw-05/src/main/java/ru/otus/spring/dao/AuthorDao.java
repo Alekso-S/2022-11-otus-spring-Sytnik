@@ -1,6 +1,7 @@
 package ru.otus.spring.dao;
 
 import ru.otus.spring.domain.Author;
+import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface AuthorDao {
 
     Author add(Author author);
 
-    void delByName(String name);
+    void delByName(String name) throws AuthorHasRelationsEx, AuthorNotFoundEx;
 }

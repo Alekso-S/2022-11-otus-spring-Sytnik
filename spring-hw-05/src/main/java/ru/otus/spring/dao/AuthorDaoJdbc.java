@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Author;
+import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
 import java.sql.ResultSet;
@@ -65,17 +66,29 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
-    public void delByName(String name) {
+    public void delByName(String name) throws AuthorHasRelationsEx, AuthorNotFoundEx {
         String query = "DELETE FROM authors WHERE name=(:name)";
-        jdbcOperations.update(query, Map.of("name", name));
+        if (checkRelationsByName(name)) {
+            throw new AuthorHasRelationsEx("");
+        } else if (jdbcOperations.update(query, Map.of("name", name)) == 0) {
+            throw new AuthorNotFoundEx("");
+        }
+    }
+
+    private boolean checkRelationsByName(String name) {
+        String query = "" +
+                "SELECT     COUNT(*)                                AS cnt " +
+                "FROM       books   B " +
+                "JOIN       authors A   ON  A.id = B.author_id" +
+                "                       AND A.name = :name ";
+        Long cnt = jdbcOperations.queryForObject(query, Map.of("name", name), Long.class);
+        return cnt > 0;
     }
 
     private static class AuthorMapper implements RowMapper<Author> {
         @Override
-        public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            return new Author(id, name);
+        public Author mapRow(ResultSet rs, int i) throws SQLException {
+            return new Author(rs.getLong("id"), rs.getString("name"));
         }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Genre;
+import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
 import java.sql.ResultSet;
@@ -81,9 +82,13 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
-    public void delByName(String name) {
+    public void delByName(String name) throws GenreHasRelationsEx, GenreNotFoundEx {
         String query = "DELETE FROM genres WHERE name=(:name)";
-        jdbcOperations.update(query, Map.of("name", name));
+        if (checkRelationsByName(name)) {
+            throw new GenreHasRelationsEx("");
+        } else if (jdbcOperations.update(query, Map.of("name", name)) == 0) {
+            throw new GenreNotFoundEx("");
+        }
     }
 
     @Override
@@ -95,9 +100,21 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
-    public void delGenresForBook(long bookId) {
-        String query = "DELETE FROM books_genres WHERE book_id=:book_id";
-        jdbcOperations.update(query, Map.of("book_id", bookId));
+    public void delGenresByBookName(String bookName) {
+        String query = "" +
+                "DELETE FROM    books_genres " +
+                "WHERE          book_id IN (SELECT id FROM books WHERE name = :book_name) ";
+        jdbcOperations.update(query, Map.of("book_name", bookName));
+    }
+
+    private boolean checkRelationsByName(String name) {
+        String query = "" +
+                "SELECT     COUNT(*)                                AS cnt " +
+                "FROM       books_genres    BG " +
+                "JOIN       genres          G   ON  G.id = BG.genre_id" +
+                "                               AND G.name = :name ";
+        Long cnt = jdbcOperations.queryForObject(query, Map.of("name", name), Long.class);
+        return cnt > 0;
     }
 
     private static class GenreMapper implements RowMapper<Genre> {

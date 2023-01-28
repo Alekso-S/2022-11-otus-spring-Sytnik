@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Genre;
+import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ class GenreDaoJdbcTest {
     private final static String GENRE_4_NAME = "Genre 4";
     private final static String GENRE_5_NAME = "Genre 5";
     private final static long BOOK_1_ID = 1;
+    private final static String BOOK_1_NAME = "Book 1";
 
     @DisplayName("возвращать корректное число записей")
     @Test
@@ -76,7 +78,7 @@ class GenreDaoJdbcTest {
     @DisplayName("удалять жанр")
     @DirtiesContext
     @Test
-    void shouldDeleteGenre() {
+    void shouldDeleteGenre() throws GenreNotFoundEx, GenreHasRelationsEx {
         genreDaoJdbc.add(new Genre(0, GENRE_5_NAME));
         assertDoesNotThrow(() -> genreDaoJdbc.getByName(GENRE_5_NAME));
         genreDaoJdbc.delByName(GENRE_5_NAME);
@@ -94,7 +96,7 @@ class GenreDaoJdbcTest {
 
     @Test
     void delGenresForBook() {
-        genreDaoJdbc.delGenresForBook(BOOK_1_ID);
+        genreDaoJdbc.delGenresByBookName(BOOK_1_NAME);
         assertEquals(0, genreDaoJdbc.getByBookId(BOOK_1_ID).size());
     }
 

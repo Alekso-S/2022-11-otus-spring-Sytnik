@@ -134,13 +134,12 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public void delByName(String name) throws BookNotFoundEx {
-        Book book = getByName(name);
-        genreDao.delGenresForBook(book.getId());
+        genreDao.delGenresByBookName(name);
         String query = "DELETE FROM books WHERE name=:name";
-        jdbcOperations.update(query, Map.of("name", name));
+        if (jdbcOperations.update(query, Map.of("name", name)) == 0) {
+            throw new BookNotFoundEx("");
+        }
     }
-
-
 
     private List<BookGenreRelation> getAllRelations() {
         String query = "SELECT book_id, genre_id FROM books_genres";
