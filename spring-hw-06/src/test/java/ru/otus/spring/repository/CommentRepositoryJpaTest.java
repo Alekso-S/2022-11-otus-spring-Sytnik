@@ -78,9 +78,12 @@ class CommentRepositoryJpaTest {
     @DisplayName("обновлять комментарий по идентификатору")
     @DirtiesContext
     @Test
-    void shouldUpdById() throws CommentNotFoundEx {
-        assertNotEquals(COMMENT_1_TEXT_UPD, entityManager.find(Comment.class, COMMENT_1_ID).getText());
-        commentRepository.updById(COMMENT_1_ID, COMMENT_1_TEXT_UPD);
+    void shouldUpdateComment() {
+        Comment comment = entityManager.find(Comment.class, COMMENT_1_ID);
+        assertNotEquals(COMMENT_1_TEXT_UPD, comment.getText());
+        entityManager.detach(comment);
+        comment.setText(COMMENT_1_TEXT_UPD);
+        commentRepository.update(comment);
         entityManager.flush();
         entityManager.clear();
         assertEquals(COMMENT_1_TEXT_UPD, entityManager.find(Comment.class, COMMENT_1_ID).getText());
@@ -89,10 +92,10 @@ class CommentRepositoryJpaTest {
     @DisplayName("удалять комментарий по идентификатору")
     @DirtiesContext
     @Test
-    void shouldDelById() {
+    void shouldDeleteComment() {
         Comment comment = entityManager.find(Comment.class, COMMENT_1_ID);
         assertNotNull(comment);
-        commentRepository.del(comment);
+        commentRepository.delete(comment);
         entityManager.flush();
         entityManager.clear();
         assertNull(entityManager.find(Comment.class, COMMENT_1_ID));

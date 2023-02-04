@@ -3,10 +3,12 @@ package ru.otus.spring.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,19 +58,12 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
-    public void delByName(String name) throws AuthorHasRelationsEx, AuthorNotFoundEx {
-        if (checkRelationsByName(name)) {
-            throw new AuthorHasRelationsEx();
-        }
-        String jpqlQuery = "delete from Author a where a.name = :name";
-        Query query = entityManager.createQuery(jpqlQuery);
-        query.setParameter("name", name);
-        if (query.executeUpdate() == 0) {
-            throw new AuthorNotFoundEx();
-        }
+    public void delete(Author author) {
+        entityManager.remove(author);
     }
 
-    private boolean checkRelationsByName(String name) {
+    @Override
+    public boolean checkRelationsByName(String name) {
         String jpqlQuery = "select count (a) from Book b join b.author a where a.name = :name";
         TypedQuery<Long> query = entityManager.createQuery(jpqlQuery, Long.class);
         query.setParameter("name", name);
@@ -82,5 +77,4 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         query.setParameter("name", name);
         return query.getSingleResult() > 0;
     }
-
 }

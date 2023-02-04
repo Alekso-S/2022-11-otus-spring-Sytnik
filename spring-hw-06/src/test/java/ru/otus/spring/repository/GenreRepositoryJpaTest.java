@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 import ru.otus.spring.util.DataProducer;
 
@@ -75,13 +74,13 @@ class GenreRepositoryJpaTest {
     @DisplayName("удалять жанр")
     @DirtiesContext
     @Test
-    void shouldDeleteGenre() throws GenreNotFoundEx, GenreHasRelationsEx {
-        Genre genre = new Genre(GENRE_5_NAME);
-        entityManager.persist(genre);
+    void shouldDeleteGenre() {
+        entityManager.persist(new Genre(GENRE_5_NAME));
         entityManager.flush();
         entityManager.clear();
-        assertNotNull(entityManager.find(Genre.class, GENRE_5_ID));
-        genreRepository.delByName(GENRE_5_NAME);
+        Genre genre = entityManager.find(Genre.class, GENRE_5_ID);
+        assertNotNull(genre);
+        genreRepository.delete(genre);
         entityManager.flush();
         entityManager.clear();
         assertNull(entityManager.find(Genre.class, GENRE_5_ID));

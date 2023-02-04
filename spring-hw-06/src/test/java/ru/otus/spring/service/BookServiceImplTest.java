@@ -12,6 +12,7 @@ import ru.otus.spring.domain.Book;
 import ru.otus.spring.exception.BookNotFoundEx;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.GenreRepository;
 import ru.otus.spring.util.DataProducer;
 
@@ -37,6 +38,8 @@ class BookServiceImplTest {
     private GenreRepository genreRepository;
     @MockBean
     private BookRepository bookRepository;
+    @MockBean
+    private CommentRepository commentRepository;
 
     private final static long BOOK_1_ID = 1;
     private final static String BOOK_1_NAME = "Book 1";
@@ -118,7 +121,7 @@ class BookServiceImplTest {
     @DisplayName("выводить сообщение об успешном удалении книги")
     @Test
     void shouldShowDelBookMessage() {
-        assertEquals(SUCCESSFUL_DEL_MESSAGE, bookService.delBookByName(BOOK_1_NAME));
+        assertEquals(SUCCESSFUL_DEL_MESSAGE, bookService.deleteBookByName(BOOK_1_NAME));
     }
 
     private List<Book> getAll() {

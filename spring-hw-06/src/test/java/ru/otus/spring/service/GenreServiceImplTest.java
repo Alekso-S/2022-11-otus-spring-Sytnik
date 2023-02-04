@@ -114,7 +114,7 @@ class GenreServiceImplTest {
     @DisplayName("выводить сообщение об успешном удалении жанра")
     @Test
     void shouldShowDelGenreMessage() {
-        assertEquals(SUCCESSFUL_DEL_MESSAGE, genreService.delGenreByName(GENRE_1_NAME));
+        assertEquals(SUCCESSFUL_DEL_MESSAGE, genreService.deleteGenreByName(GENRE_1_NAME));
     }
 
     private List<Genre> getAll() {

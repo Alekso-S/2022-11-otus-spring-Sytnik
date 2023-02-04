@@ -15,5 +15,5 @@ public interface GenreService {
 
     String addGenre(String name);
 
-    String delGenreByName(String name);
+    String deleteGenreByName(String name);
 }

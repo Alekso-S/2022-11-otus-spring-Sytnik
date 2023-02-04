@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 import ru.otus.spring.util.DataProducer;
 
@@ -67,13 +66,13 @@ class AuthorRepositoryJpaTest {
     @DisplayName("удалять автора")
     @DirtiesContext
     @Test
-    void shouldDeleteAuthor() throws AuthorHasRelationsEx, AuthorNotFoundEx {
-        Author author = new Author(AUTHOR_3_NAME);
-        entityManager.persist(author);
+    void shouldDeleteAuthor() {
+        entityManager.persist(new Author(AUTHOR_3_NAME));
         entityManager.flush();
         entityManager.clear();
-        assertNotNull(entityManager.find(Author.class, AUTHOR_3_ID));
-        authorRepository.delByName(AUTHOR_3_NAME);
+        Author author = entityManager.find(Author.class, AUTHOR_3_ID);
+        assertNotNull(author);
+        authorRepository.delete(author);
         entityManager.flush();
         entityManager.clear();
         assertNull(entityManager.find(Author.class, AUTHOR_3_ID));

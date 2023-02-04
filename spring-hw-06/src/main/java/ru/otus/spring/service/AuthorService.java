@@ -11,5 +11,5 @@ public interface AuthorService {
 
     String addAuthor(String name);
 
-    String delAuthorByName(String name);
+    String deleteAuthorByName(String name);
 }

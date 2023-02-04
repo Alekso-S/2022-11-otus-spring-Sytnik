@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.converter.GenreConverter;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.GenreRepository;
@@ -82,16 +81,19 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional
     @Override
-    public String delGenreByName(String name) {
+    public String deleteGenreByName(String name) {
+        Genre genre;
         try {
-            genreRepository.delByName(name);
-        } catch (GenreHasRelationsEx e) {
-            logger.warn("Books by genre with name={} exist", name);
-            return "Books by this genre exist";
+            genre = genreRepository.getByName(name);
         } catch (GenreNotFoundEx e) {
             logger.warn("Genre with name={} not found", name);
             return "Genre not found";
         }
+        if(genreRepository.checkRelationsByName(name)) {
+            logger.warn("Books by genre with name={} exist", name);
+            return "Books by this genre exist";
+        }
+        genreRepository.delete(genre);
         return "Genre deleted";
     }
 }

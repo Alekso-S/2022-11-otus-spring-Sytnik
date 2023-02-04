@@ -19,7 +19,10 @@ public interface CommentRepository {
     @SuppressWarnings("UnusedReturnValue")
     Comment add(Comment comment);
 
-    void updById(long id, String text) throws CommentNotFoundEx;
+    void delete(Comment comment);
 
-    void del(Comment comment);
+    void deleteByBookName(String bookName);
+
+    @SuppressWarnings("UnusedReturnValue")
+    Comment update(Comment comment);
 }

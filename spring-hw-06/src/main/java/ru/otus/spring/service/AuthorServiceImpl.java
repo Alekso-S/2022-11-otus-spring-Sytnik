@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.converter.AuthorConverter;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.exception.AuthorHasRelationsEx;
 import ru.otus.spring.exception.AuthorNotFoundEx;
 import ru.otus.spring.repository.AuthorRepository;
 
@@ -62,16 +61,19 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public String delAuthorByName(String name) {
+    public String deleteAuthorByName(String name) {
+        Author author;
         try {
-            authorRepository.delByName(name);
-        } catch (AuthorHasRelationsEx e) {
-            logger.warn("Books by author with name={} exist", name);
-            return "Books by this author exist";
+            author = authorRepository.getByName(name);
         } catch (AuthorNotFoundEx e) {
             logger.warn("Author with name={} not found", name);
             return "Author not found";
         }
+        if (authorRepository.checkRelationsByName(name)) {
+            logger.warn("Books by author with name={} exist", name);
+            return "Books by this author exist";
+        }
+        authorRepository.delete(author);
         return "Author deleted";
     }
 }

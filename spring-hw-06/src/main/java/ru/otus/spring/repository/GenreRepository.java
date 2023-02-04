@@ -1,7 +1,6 @@
 package ru.otus.spring.repository;
 
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
 import java.util.List;
@@ -23,7 +22,9 @@ public interface GenreRepository {
 
     boolean checkExistenceByName(String name);
 
-    void delByName(String name) throws GenreHasRelationsEx, GenreNotFoundEx;
-
     boolean checkExistenceById(long id);
+
+    boolean checkRelationsByName(String name);
+
+    void delete(Genre genre);
 }

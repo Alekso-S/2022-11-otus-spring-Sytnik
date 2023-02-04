@@ -3,10 +3,12 @@ package ru.otus.spring.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,23 +82,16 @@ public class GenreRepositoryJpa implements GenreRepository {
     }
 
     @Override
-    public void delByName(String name) throws GenreHasRelationsEx, GenreNotFoundEx {
-        if (checkRelationsByName(name)) {
-            throw new GenreHasRelationsEx();
-        }
-        String jpqlQuery = "delete from Genre g where g.name = :name";
-        Query query = entityManager.createQuery(jpqlQuery);
-        query.setParameter("name", name);
-        if (query.executeUpdate() == 0) {
-            throw new GenreNotFoundEx();
-        }
-    }
-
-    private boolean checkRelationsByName(String name) {
+    public boolean checkRelationsByName(String name) {
         String jpqlQuery = "select count (g) from Book b join b.genres g where g.name = :name";
         TypedQuery<Long> query = entityManager.createQuery(jpqlQuery, Long.class);
         query.setParameter("name", name);
         return query.getSingleResult() > 0;
+    }
+
+    @Override
+    public void delete(Genre genre) {
+        entityManager.remove(genre);
     }
 
     @Override

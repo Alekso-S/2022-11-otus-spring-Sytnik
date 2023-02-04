@@ -3,7 +3,6 @@ package ru.otus.spring.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -29,18 +28,16 @@ public class Book {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
-    @ToString.Exclude
     private Author author;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     @JoinTable(joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    @ToString.Exclude
     private List<Genre> genres;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", insertable = false, updatable = false)
-    @ToString.Exclude
+    @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments;
 
     public Book(String name, Author author, List<Genre> genres) {

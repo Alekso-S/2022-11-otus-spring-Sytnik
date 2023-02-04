@@ -63,18 +63,21 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    public void updById(long id, String text) throws CommentNotFoundEx {
-        String jpqlQuery = "update Comment c set c.text = :text where c.id = :id";
-        Query query = entityManager.createQuery(jpqlQuery);
-        query.setParameter("id", id);
-        query.setParameter("text", text);
-        if (query.executeUpdate() == 0) {
-            throw new CommentNotFoundEx();
-        }
+    public void delete(Comment comment) {
+        entityManager.remove(comment);
     }
 
     @Override
-    public void del(Comment comment) {
-        entityManager.remove(comment);
+    public void deleteByBookName(String bookName) {
+        String jpqlQuery = "delete from Comment c where c in " +
+                "(select c from Book b join b.comments c where b.name = :book_name)";
+        Query query = entityManager.createQuery(jpqlQuery);
+        query.setParameter("book_name", bookName);
+        query.executeUpdate();
+    }
+
+    @Override
+    public Comment update(Comment comment) {
+        return entityManager.merge(comment);
     }
 }

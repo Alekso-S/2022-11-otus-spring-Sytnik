@@ -46,7 +46,7 @@ public class Commands {
 
     @ShellMethod(key = {"author-del-name", "adn"}, value = "Remove author by name")
     public String delAuthorByName(String name) {
-        return authorService.delAuthorByName(name);
+        return authorService.deleteAuthorByName(name);
     }
 
     //Genres
@@ -87,7 +87,7 @@ public class Commands {
 
     @ShellMethod(key = {"genre-del-name", "gdn"}, value = "Remove genre by name")
     public String delGenreByName(String name) {
-        return genreService.delGenreByName(name);
+        return genreService.deleteGenreByName(name);
     }
 
     //Books
@@ -128,7 +128,7 @@ public class Commands {
 
     @ShellMethod(key = {"book-del-name", "bdn"}, value = "Remove book by name")
     public String delBookByName(String name) {
-        return bookService.delBookByName(name);
+        return bookService.deleteBookByName(name);
     }
 
     //Comments
@@ -163,11 +163,11 @@ public class Commands {
     }
     @ShellMethod(key = {"comment-upd-id", "cui"}, value = "Update comment by id")
     public String updCommentById(long id, String text) {
-        return commentService.updById(id, text);
+        return commentService.updateById(id, text);
     }
 
     @ShellMethod(key = {"comment-del-id", "cdi"}, value = "Delete comment by id")
     public String delCommentById(long id) {
-        return commentService.delById(id);
+        return commentService.deleteById(id);
     }
 }

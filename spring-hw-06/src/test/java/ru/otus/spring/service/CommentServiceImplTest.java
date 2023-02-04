@@ -92,13 +92,13 @@ class CommentServiceImplTest {
     @DisplayName("выводить сообщение об успешном обновлении комментария")
     @Test
     void shouldUpdById() {
-        assertEquals(SUCCESSFUL_UPD_MESSAGE, commentService.updById(COMMENT_1_ID, COMMENT_1_TEXT_UPD));
+        assertEquals(SUCCESSFUL_UPD_MESSAGE, commentService.updateById(COMMENT_1_ID, COMMENT_1_TEXT_UPD));
     }
 
     @DisplayName("выводить сообщение об успешном удалении комментария")
     @Test
     void shouldDelById() {
-        assertEquals(SUCCESSFUL_DEL_MESSAGE, commentService.delById(COMMENT_1_ID));
+        assertEquals(SUCCESSFUL_DEL_MESSAGE, commentService.deleteById(COMMENT_1_ID));
     }
 
     private List<Comment> getByBookId(long bookId) {

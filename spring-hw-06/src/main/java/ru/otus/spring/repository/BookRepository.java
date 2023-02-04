@@ -21,7 +21,7 @@ public interface BookRepository {
     @SuppressWarnings("UnusedReturnValue")
     Book add(Book book);
 
-    void delByName(String name) throws BookNotFoundEx;
+    void delete(Book book);
 
     boolean checkExistenceById(long id);
 

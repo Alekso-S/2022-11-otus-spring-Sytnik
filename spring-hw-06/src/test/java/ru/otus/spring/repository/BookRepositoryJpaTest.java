@@ -79,13 +79,14 @@ class BookRepositoryJpaTest {
     @DisplayName("удалять книгу")
     @DirtiesContext
     @Test
-    void shouldDeleteAuthor() throws BookNotFoundEx {
+    void shouldDeleteBook() {
         entityManager.persist(new Book(BOOK_5_NAME, getAuthorById(AUTHOR_1_ID),
                 List.of(getGenreById(GENRE_1_ID), getGenreById(GENRE_2_ID))));
         entityManager.flush();
         entityManager.clear();
-        assertNotNull(entityManager.find(Book.class, BOOK_5_ID));
-        bookRepository.delByName(BOOK_5_NAME);
+        Book book = entityManager.find(Book.class, BOOK_5_ID);
+        assertNotNull(book);
+        bookRepository.delete(book);
         entityManager.flush();
         entityManager.clear();
         assertNull(entityManager.find(Book.class, BOOK_5_ID));

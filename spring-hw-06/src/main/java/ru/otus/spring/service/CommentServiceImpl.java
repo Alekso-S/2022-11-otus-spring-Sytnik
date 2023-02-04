@@ -84,19 +84,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public String updById(long id, String text) {
-        try {
-            commentRepository.updById(id, text);
-        } catch (CommentNotFoundEx e) {
-            logger.warn("Comment with id={} not found", id);
-            return "Comment not found";
-        }
-        return "Comment updated";
-    }
-
-    @Override
-    @Transactional
-    public String delById(long id) {
+    public String updateById(long id, String text) {
         Comment comment;
         try {
             comment = commentRepository.getById(id);
@@ -104,7 +92,22 @@ public class CommentServiceImpl implements CommentService {
             logger.warn("Comment with id={} not found", id);
             return "Comment not found";
         }
-        commentRepository.del(comment);
+        comment.setText(text);
+        commentRepository.update(comment);
+        return "Comment updated";
+    }
+
+    @Override
+    @Transactional
+    public String deleteById(long id) {
+        Comment comment;
+        try {
+            comment = commentRepository.getById(id);
+        } catch (CommentNotFoundEx e) {
+            logger.warn("Comment with id={} not found", id);
+            return "Comment not found";
+        }
+        commentRepository.delete(comment);
         return "Comment deleted";
     }
 }

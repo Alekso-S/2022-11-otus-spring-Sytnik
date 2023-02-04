@@ -84,7 +84,7 @@ class AuthorServiceImplTest {
     @DisplayName("выводить сообщение об успешном удалении автора")
     @Test
     void shouldShowDelAuthorMessage() {
-        assertEquals(SUCCESSFUL_DEL_MESSAGE, authorService.delAuthorByName(AUTHOR_1_NAME));
+        assertEquals(SUCCESSFUL_DEL_MESSAGE, authorService.deleteAuthorByName(AUTHOR_1_NAME));
     }
 
     private List<Author> getAll() {

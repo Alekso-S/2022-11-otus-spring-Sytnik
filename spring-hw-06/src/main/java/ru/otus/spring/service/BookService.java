@@ -15,5 +15,5 @@ public interface BookService {
 
     String addBook(String name, String authorName, String[] genreNames);
 
-    String delBookByName(String name);
+    String deleteBookByName(String name);
 }

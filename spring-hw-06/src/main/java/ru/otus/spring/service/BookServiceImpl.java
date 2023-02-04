@@ -14,6 +14,7 @@ import ru.otus.spring.exception.BookNotFoundEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.GenreRepository;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public long showBooksCount() {
@@ -97,13 +99,16 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public String delBookByName(String name) {
+    public String deleteBookByName(String name) {
+        Book book;
         try {
-            bookRepository.delByName(name);
+            book = bookRepository.getByName(name);
         } catch (BookNotFoundEx e) {
             logger.warn("Book with name={} not found", name);
             return "Book not found";
         }
+        commentRepository.deleteByBookName(name);
+        bookRepository.delete(book);
         return "Book deleted";
     }
 

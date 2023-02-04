@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.exception.BookNotFoundEx;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,13 +74,8 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public void delByName(String name) throws BookNotFoundEx {
-        String jpqlQuery = "delete from Book b where b.name = :name";
-        Query query = entityManager.createQuery(jpqlQuery);
-        query.setParameter("name", name);
-        if (query.executeUpdate() == 0) {
-            throw new BookNotFoundEx();
-        }
+    public void delete(Book book) {
+        entityManager.remove(book);
     }
 
     @Override
