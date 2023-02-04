@@ -74,12 +74,7 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    public void delById(long id) throws CommentNotFoundEx {
-        String jpqlQuery = "delete from Comment c where c.id = :id";
-        Query query = entityManager.createQuery(jpqlQuery);
-        query.setParameter("id", id);
-        if (query.executeUpdate() == 0) {
-            throw new CommentNotFoundEx();
-        }
+    public void del(Comment comment) {
+        entityManager.remove(comment);
     }
 }

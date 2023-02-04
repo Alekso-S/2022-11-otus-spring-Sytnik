@@ -9,11 +9,14 @@ import ru.otus.spring.converter.BookConverter;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
+import ru.otus.spring.exception.AuthorNotFoundEx;
 import ru.otus.spring.exception.BookNotFoundEx;
+import ru.otus.spring.exception.GenreNotFoundEx;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.GenreRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +34,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.count();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public String showBookById(long id) {
         try {
@@ -42,7 +45,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public String showBookByName(String name) {
         try {
@@ -53,13 +56,13 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public String showAllBooks() {
         return BookConverter.toString(bookRepository.getAll());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public String showBooksByGenreId(long genreId) {
         if (!genreRepository.checkExistenceById(genreId)) {
@@ -69,7 +72,7 @@ public class BookServiceImpl implements BookService {
         return BookConverter.toString(bookRepository.getByGenreId(genreId));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public String showBooksByGenreName(String genreName) {
         if (!genreRepository.checkExistenceByName(genreName)) {
@@ -86,8 +89,8 @@ public class BookServiceImpl implements BookService {
             logger.warn("Book with name={} already exists", name);
             return "Book already exists";
         }
-        Author author = authorRepository.prepare(authorName);
-        List<Genre> genres = genreRepository.prepare(genreNames);
+        Author author = prepareAuthor(authorName);
+        List<Genre> genres = prepareGenres(genreNames);
         bookRepository.add(new Book(name, author, genres));
         return "Book added";
     }
@@ -102,5 +105,25 @@ public class BookServiceImpl implements BookService {
             return "Book not found";
         }
         return "Book deleted";
+    }
+
+    private Author prepareAuthor(String authorName) {
+        try {
+            return authorRepository.getByName(authorName);
+        } catch (AuthorNotFoundEx e) {
+            return authorRepository.add(new Author(authorName));
+        }
+    }
+
+    private List<Genre> prepareGenres(String[] genreNames) {
+        List<Genre> genres = new ArrayList<>();
+        for (String genreName : genreNames) {
+            try {
+                genres.add(genreRepository.getByName(genreName));
+            } catch (GenreNotFoundEx e) {
+                genres.add(genreRepository.add(new Genre(genreName)));
+            }
+        }
+        return genres;
     }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
@@ -22,6 +23,8 @@ class AuthorRepositoryJpaTest {
 
     @Autowired
     private AuthorRepositoryJpa authorRepository;
+    @Autowired
+    private TestEntityManager entityManager;
 
     private final static long AUTHOR_3_ID = 3;
     private final static String AUTHOR_3_NAME = "Author 3";
@@ -53,20 +56,27 @@ class AuthorRepositoryJpaTest {
     @DisplayName("добавлять автора")
     @DirtiesContext
     @Test
-    void shouldCreateAuthor() throws AuthorNotFoundEx {
-        assertThrowsExactly(AuthorNotFoundEx.class, () -> authorRepository.getByName(AUTHOR_3_NAME));
-        authorRepository.add(new Author(AUTHOR_3_NAME));
-        assertEquals(AUTHOR_3_NAME, authorRepository.getById(AUTHOR_3_ID).getName());
+    void shouldCreateAuthor() {
+        assertNull(entityManager.find(Author.class, AUTHOR_3_ID));
+        Author author = authorRepository.add(new Author(AUTHOR_3_NAME));
+        entityManager.flush();
+        entityManager.clear();
+        assertEquals(author, entityManager.find(Author.class, AUTHOR_3_ID));
     }
 
     @DisplayName("удалять автора")
     @DirtiesContext
     @Test
     void shouldDeleteAuthor() throws AuthorHasRelationsEx, AuthorNotFoundEx {
-        authorRepository.add(new Author(AUTHOR_3_NAME));
-        assertDoesNotThrow(() -> authorRepository.getByName(AUTHOR_3_NAME));
+        Author author = new Author(AUTHOR_3_NAME);
+        entityManager.persist(author);
+        entityManager.flush();
+        entityManager.clear();
+        assertNotNull(entityManager.find(Author.class, AUTHOR_3_ID));
         authorRepository.delByName(AUTHOR_3_NAME);
-        assertThrowsExactly(AuthorNotFoundEx.class, () -> authorRepository.getByName(AUTHOR_3_NAME));
+        entityManager.flush();
+        entityManager.clear();
+        assertNull(entityManager.find(Author.class, AUTHOR_3_ID));
     }
 
     private List<Author> getAll() {

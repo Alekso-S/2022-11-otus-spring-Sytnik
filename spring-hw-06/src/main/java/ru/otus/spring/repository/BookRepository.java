@@ -18,6 +18,7 @@ public interface BookRepository {
 
     List<Book> getByGenreName(String genreName);
 
+    @SuppressWarnings("UnusedReturnValue")
     Book add(Book book);
 
     void delByName(String name) throws BookNotFoundEx;

@@ -97,12 +97,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public String delById(long id) {
+        Comment comment;
         try {
-            commentRepository.delById(id);
+            comment = commentRepository.getById(id);
         } catch (CommentNotFoundEx e) {
             logger.warn("Comment with id={} not found", id);
             return "Comment not found";
         }
+        commentRepository.del(comment);
         return "Comment deleted";
     }
 }

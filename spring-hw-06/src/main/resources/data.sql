@@ -1,3 +1,5 @@
+-- noinspection SpellCheckingInspectionForFile
+
 INSERT INTO authors (`name`)
 VALUES      ('Stephen King')
         ,   ('Viktor Pelevin')

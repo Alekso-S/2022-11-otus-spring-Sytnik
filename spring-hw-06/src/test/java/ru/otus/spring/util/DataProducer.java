@@ -88,4 +88,16 @@ public class DataProducer {
                 .filter(c -> c.getId() == commentId)
                 .findAny().orElseThrow();
     }
+
+    public static Author getAuthorById(long authorId) {
+        return getAllAuthors().stream()
+                .filter(a -> a.getId() == authorId)
+                .findAny().orElseThrow();
+    }
+
+    public static Genre getGenreById(long genreId) {
+        return getAllGenres().stream()
+                .filter(g -> g.getId() == genreId)
+                .findAny().orElseThrow();
+    }
 }

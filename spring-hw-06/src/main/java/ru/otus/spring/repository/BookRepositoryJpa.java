@@ -37,7 +37,7 @@ public class BookRepositoryJpa implements BookRepository {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new BookNotFoundEx(e.getMessage());
+            throw new BookNotFoundEx(e);
         }
     }
 

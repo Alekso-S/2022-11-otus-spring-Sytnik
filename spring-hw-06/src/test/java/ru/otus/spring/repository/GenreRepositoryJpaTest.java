@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Genre;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("SameParameterValue")
 @DisplayName("Репозиторий для работы с жанрами должен")
 @DataJpaTest
 @Import(GenreRepositoryJpa.class)
@@ -22,6 +24,8 @@ class GenreRepositoryJpaTest {
 
     @Autowired
     private GenreRepositoryJpa genreRepository;
+    @Autowired
+    private TestEntityManager entityManager;
 
     private final static long GENRE_5_ID = 5;
     private final static String GENRE_5_NAME = "Genre 5";
@@ -60,20 +64,27 @@ class GenreRepositoryJpaTest {
     @DisplayName("добавлять жанр")
     @DirtiesContext
     @Test
-    void shouldCreateGenre() throws GenreNotFoundEx {
-        assertThrowsExactly(GenreNotFoundEx.class, () -> genreRepository.getByName(GENRE_5_NAME));
-        genreRepository.add(new Genre(GENRE_5_NAME));
-        assertEquals(GENRE_5_NAME, genreRepository.getById(GENRE_5_ID).getName());
+    void shouldCreateGenre() {
+        assertNull(entityManager.find(Genre.class, GENRE_5_ID));
+        Genre genre = genreRepository.add(new Genre(GENRE_5_NAME));
+        entityManager.flush();
+        entityManager.clear();
+        assertEquals(genre, entityManager.find(Genre.class, GENRE_5_ID));
     }
 
     @DisplayName("удалять жанр")
     @DirtiesContext
     @Test
     void shouldDeleteGenre() throws GenreNotFoundEx, GenreHasRelationsEx {
-        genreRepository.add(new Genre(GENRE_5_NAME));
-        assertDoesNotThrow(() -> genreRepository.getByName(GENRE_5_NAME));
+        Genre genre = new Genre(GENRE_5_NAME);
+        entityManager.persist(genre);
+        entityManager.flush();
+        entityManager.clear();
+        assertNotNull(entityManager.find(Genre.class, GENRE_5_ID));
         genreRepository.delByName(GENRE_5_NAME);
-        assertThrowsExactly(GenreNotFoundEx.class, () -> genreRepository.getByName(GENRE_5_NAME));
+        entityManager.flush();
+        entityManager.clear();
+        assertNull(entityManager.find(Genre.class, GENRE_5_ID));
     }
 
     private List<Genre> getAll() {

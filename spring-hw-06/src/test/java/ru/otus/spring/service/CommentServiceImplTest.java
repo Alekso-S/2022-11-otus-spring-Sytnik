@@ -19,6 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings({"FieldCanBeLocal", "SameParameterValue"})
 @DisplayName("Сервис работы с комментариями должен")
 @SpringBootTest
 @Import(CommentServiceImpl.class)

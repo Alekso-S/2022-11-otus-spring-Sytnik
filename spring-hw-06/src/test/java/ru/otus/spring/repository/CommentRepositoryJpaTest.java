@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings({"FieldCanBeLocal", "SameParameterValue"})
 @DisplayName("Репозиторий для работы с комментариями должен")
 @DataJpaTest
 @Import(CommentRepositoryJpa.class)
@@ -66,30 +67,35 @@ class CommentRepositoryJpaTest {
     @DisplayName("добавлять комментарий")
     @DirtiesContext
     @Test
-    void shouldAdd() throws CommentNotFoundEx {
-        assertThrowsExactly(CommentNotFoundEx.class, () -> commentRepository.getById(COMMENT_9_ID));
-        Comment comment = new Comment(getBookById(BOOK_1_ID), COMMENT_9_TEXT);
-        commentRepository.add(comment);
-        assertEquals(comment, commentRepository.getById(COMMENT_9_ID));
+    void shouldAdd() {
+        assertNull(entityManager.find(Comment.class, COMMENT_9_ID));
+        Comment comment = commentRepository.add(new Comment(getBookById(BOOK_1_ID), COMMENT_9_TEXT));
+        entityManager.flush();
+        entityManager.clear();
+        assertEquals(comment, entityManager.find(Comment.class, COMMENT_9_ID));
     }
 
     @DisplayName("обновлять комментарий по идентификатору")
     @DirtiesContext
     @Test
     void shouldUpdById() throws CommentNotFoundEx {
-        Comment comment = new Comment(COMMENT_1_ID, COMMENT_1_TEXT_UPD);
+        assertNotEquals(COMMENT_1_TEXT_UPD, entityManager.find(Comment.class, COMMENT_1_ID).getText());
         commentRepository.updById(COMMENT_1_ID, COMMENT_1_TEXT_UPD);
-        assertEquals(comment, commentRepository.getById(COMMENT_1_ID));
+        entityManager.flush();
+        entityManager.clear();
+        assertEquals(COMMENT_1_TEXT_UPD, entityManager.find(Comment.class, COMMENT_1_ID).getText());
     }
 
     @DisplayName("удалять комментарий по идентификатору")
     @DirtiesContext
     @Test
-    void shouldDelById() throws CommentNotFoundEx {
-        assertDoesNotThrow(() -> commentRepository.getById(COMMENT_1_ID));
-        commentRepository.delById(COMMENT_1_ID);
+    void shouldDelById() {
+        Comment comment = entityManager.find(Comment.class, COMMENT_1_ID);
+        assertNotNull(comment);
+        commentRepository.del(comment);
+        entityManager.flush();
         entityManager.clear();
-        assertThrowsExactly(CommentNotFoundEx.class, () -> commentRepository.getById(COMMENT_1_ID));
+        assertNull(entityManager.find(Comment.class, COMMENT_1_ID));
     }
 
     private List<Comment> getByBookId(long bookId) {

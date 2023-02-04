@@ -38,7 +38,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new AuthorNotFoundEx(e.getMessage());
+            throw new AuthorNotFoundEx(e);
         }
     }
 
@@ -83,14 +83,4 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         return query.getSingleResult() > 0;
     }
 
-    @Override
-    public Author prepare(String name) {
-        try {
-            return getByName(name);
-        } catch (AuthorNotFoundEx e) {
-            Author author = new Author(name);
-            entityManager.persist(author);
-            return author;
-        }
-    }
 }

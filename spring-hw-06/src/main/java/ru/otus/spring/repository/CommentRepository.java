@@ -16,9 +16,10 @@ public interface CommentRepository {
 
     List<Comment> getByBookName(String bookName);
 
+    @SuppressWarnings("UnusedReturnValue")
     Comment add(Comment comment);
 
     void updById(long id, String text) throws CommentNotFoundEx;
 
-    void delById(long id) throws CommentNotFoundEx;
+    void del(Comment comment);
 }

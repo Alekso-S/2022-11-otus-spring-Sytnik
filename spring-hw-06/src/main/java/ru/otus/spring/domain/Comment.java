@@ -39,6 +39,10 @@ public class Comment {
         this.text = text;
     }
 
+    public Comment(long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -20,6 +20,4 @@ public interface AuthorRepository {
     void delByName(String name) throws AuthorHasRelationsEx, AuthorNotFoundEx;
 
     boolean checkExistenceByName(String name);
-
-    Author prepare(String name);
 }

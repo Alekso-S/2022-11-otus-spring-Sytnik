@@ -26,6 +26,4 @@ public interface GenreRepository {
     void delByName(String name) throws GenreHasRelationsEx, GenreNotFoundEx;
 
     boolean checkExistenceById(long id);
-
-    List<Genre> prepare(String[] names);
 }

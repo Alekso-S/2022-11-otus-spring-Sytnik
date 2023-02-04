@@ -8,6 +8,7 @@ import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.CommentService;
 import ru.otus.spring.service.GenreService;
 
+@SuppressWarnings("SpellCheckingInspection")
 @RequiredArgsConstructor
 @ShellComponent
 public class Commands {

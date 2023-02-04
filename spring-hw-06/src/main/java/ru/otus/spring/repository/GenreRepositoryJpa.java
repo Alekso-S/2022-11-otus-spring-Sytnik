@@ -7,7 +7,6 @@ import ru.otus.spring.exception.GenreHasRelationsEx;
 import ru.otus.spring.exception.GenreNotFoundEx;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +45,7 @@ public class GenreRepositoryJpa implements GenreRepository {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new GenreNotFoundEx(e.getMessage());
+            throw new GenreNotFoundEx(e);
         }
     }
 
@@ -106,20 +105,5 @@ public class GenreRepositoryJpa implements GenreRepository {
         TypedQuery<Long> query = entityManager.createQuery(jpqlQuery, Long.class);
         query.setParameter("id", id);
         return query.getSingleResult() > 0;
-    }
-
-    @Override
-    public List<Genre> prepare(String[] names) {
-        List<Genre> genres = new ArrayList<>();
-        for (String name : names) {
-            try {
-                genres.add(getByName(name));
-            } catch (GenreNotFoundEx e) {
-                Genre genre = new Genre(name);
-                entityManager.persist(genre);
-                genres.add(genre);
-            }
-        }
-        return genres;
     }
 }
