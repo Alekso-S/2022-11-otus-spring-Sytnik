@@ -7,7 +7,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,13 +58,12 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass() && getClass() != o.getClass().getSuperclass()) return false;
         Book book = (Book) o;
-        return id.equals(book.getId()) && name.equals(book.getName()) && author.equals(book.getAuthor())
-                && new ArrayList<>(genres).equals(new ArrayList<>(book.getGenres()));
+        return id.equals(book.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, author, genres);
+        return Objects.hash(id);
     }
 
     @Override
@@ -73,8 +71,6 @@ public class Book {
         return "Book{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", author=" + author +
-                ", genres=" + genres +
                 '}';
     }
 }

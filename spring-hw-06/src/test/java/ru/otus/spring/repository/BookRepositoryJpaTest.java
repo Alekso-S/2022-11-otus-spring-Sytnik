@@ -80,11 +80,8 @@ class BookRepositoryJpaTest {
     @DirtiesContext
     @Test
     void shouldDeleteBook() {
-        entityManager.persist(new Book(BOOK_5_NAME, getAuthorById(AUTHOR_1_ID),
+        Book book = entityManager.persistFlushFind(new Book(BOOK_5_NAME, getAuthorById(AUTHOR_1_ID),
                 List.of(getGenreById(GENRE_1_ID), getGenreById(GENRE_2_ID))));
-        entityManager.flush();
-        entityManager.clear();
-        Book book = entityManager.find(Book.class, BOOK_5_ID);
         assertNotNull(book);
         bookRepository.delete(book);
         entityManager.flush();

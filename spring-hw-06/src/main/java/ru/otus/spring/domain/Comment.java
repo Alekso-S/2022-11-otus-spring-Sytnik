@@ -10,7 +10,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
@@ -48,11 +47,19 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass() && getClass() != o.getClass().getSuperclass()) return false;
         Comment comment = (Comment) o;
-        return id.equals(comment.getId()) && text.equals(comment.getText());
+        return id.equals(comment.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text);
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                '}';
     }
 }

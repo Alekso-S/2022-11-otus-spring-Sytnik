@@ -75,10 +75,7 @@ class GenreRepositoryJpaTest {
     @DirtiesContext
     @Test
     void shouldDeleteGenre() {
-        entityManager.persist(new Genre(GENRE_5_NAME));
-        entityManager.flush();
-        entityManager.clear();
-        Genre genre = entityManager.find(Genre.class, GENRE_5_ID);
+        Genre genre = entityManager.persistFlushFind(new Genre(GENRE_5_NAME));
         assertNotNull(genre);
         genreRepository.delete(genre);
         entityManager.flush();

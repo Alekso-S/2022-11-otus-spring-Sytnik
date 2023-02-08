@@ -38,11 +38,11 @@ public class Genre {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass() && getClass() != o.getClass().getSuperclass()) return false;
         Genre genre = (Genre) o;
-        return id.equals(genre.getId()) && name.equals(genre.getName());
+        return id.equals(genre.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

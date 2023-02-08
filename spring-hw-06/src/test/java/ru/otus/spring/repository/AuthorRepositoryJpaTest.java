@@ -67,10 +67,7 @@ class AuthorRepositoryJpaTest {
     @DirtiesContext
     @Test
     void shouldDeleteAuthor() {
-        entityManager.persist(new Author(AUTHOR_3_NAME));
-        entityManager.flush();
-        entityManager.clear();
-        Author author = entityManager.find(Author.class, AUTHOR_3_ID);
+        Author author = entityManager.persistFlushFind(new Author(AUTHOR_3_NAME));
         assertNotNull(author);
         authorRepository.delete(author);
         entityManager.flush();

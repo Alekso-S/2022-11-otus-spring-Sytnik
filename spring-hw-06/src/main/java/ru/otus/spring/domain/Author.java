@@ -38,11 +38,11 @@ public class Author {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass() && getClass() != o.getClass().getSuperclass()) return false;
         Author author = (Author) o;
-        return id.equals(author.getId()) && name.equals(author.getName());
+        return id.equals(author.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }
