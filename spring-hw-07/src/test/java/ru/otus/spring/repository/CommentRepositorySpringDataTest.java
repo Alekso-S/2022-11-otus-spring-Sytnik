@@ -11,7 +11,6 @@ import ru.otus.spring.domain.Comment;
 import ru.otus.spring.exception.BookNotFoundEx;
 import ru.otus.spring.util.DataProducer;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,25 +58,17 @@ class CommentRepositorySpringDataTest {
     @Test
     @DisplayName("удалять комментарии по имени книги")
     void shouldDeleteByBookName() {
-        TypedQuery<Long> query = entityManager.getEntityManager()
-                .createQuery("select count (c) from Comment c where c.book.name = :book_name", Long.class)
-                .setParameter("book_name", BOOK_1_NAME);
-        assertNotEquals(0, query.getSingleResult());
+        assertNotEquals(0, commentRepository.findAllByBookName(BOOK_1_NAME).size());
         commentRepository.deleteByBookName(BOOK_1_NAME);
-        assertEquals(0, query.getSingleResult());
+        assertEquals(0, commentRepository.findAllByBookName(BOOK_1_NAME).size());
     }
 
     @Test
     @DirtiesContext
     @DisplayName("должен добавлять новый комментарий")
     void shouldAdd() {
-        TypedQuery<Comment> query = entityManager.getEntityManager()
-                .createQuery("select c from Comment c where c.id in (" +
-                        "select max (c.id) from Comment c where c.book.name = :book_name)", Comment.class)
-                .setParameter("book_name", BOOK_1_NAME);
-        assertNotEquals(COMMENT_9_TEXT, query.getSingleResult().getText());
-        commentRepository.save(new Comment(getBookByName(BOOK_1_NAME).orElseThrow(), COMMENT_9_TEXT));
-        assertEquals(COMMENT_9_TEXT, query.getSingleResult().getText());
+        Comment comment = commentRepository.save(new Comment(getBookByName(BOOK_1_NAME).orElseThrow(), COMMENT_9_TEXT));
+        assertEquals(comment, entityManager.find(Comment.class, comment.getId()));
     }
 
     private List<Comment> getAllByBookId(long bookId) {

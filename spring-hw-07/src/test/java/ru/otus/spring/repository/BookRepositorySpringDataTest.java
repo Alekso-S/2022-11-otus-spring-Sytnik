@@ -11,8 +11,6 @@ import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.util.DataProducer;
 
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +25,7 @@ class BookRepositorySpringDataTest {
     @Autowired
     private BookRepository bookRepository;
     @Autowired
-    TestEntityManager entityManager;
+    private TestEntityManager entityManager;
 
     private final static String BOOK_1_NAME = "Book 1";
     private final static String BOOK_5_NAME = "Book 5";
@@ -85,12 +83,8 @@ class BookRepositorySpringDataTest {
     @DirtiesContext
     @DisplayName("должен добавлять новую книгу")
     void shouldAdd() {
-        TypedQuery<Book> query = entityManager.getEntityManager()
-                .createQuery("select b from Book b where b.name = :name", Book.class)
-                .setParameter("name", BOOK_5_NAME);
-        assertThrowsExactly(NoResultException.class, query::getSingleResult);
-        bookRepository.save(new Book(BOOK_5_NAME, getAuthorById(AUTHOR_1_ID).orElseThrow(), getAllGenres()));
-        assertDoesNotThrow(query::getSingleResult);
+        Book book = bookRepository.save(new Book(BOOK_5_NAME, getAuthorById(AUTHOR_1_ID).orElseThrow(), getAllGenres()));
+        assertEquals(book, entityManager.find(Book.class, book.getId()));
     }
 
     private Optional<Book> getByName(String bookName) {

@@ -9,8 +9,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.util.DataProducer;
 
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +21,7 @@ class GenreRepositorySpringDataTest {
     @Autowired
     private GenreRepository genreRepository;
     @Autowired
-    TestEntityManager entityManager;
+    private TestEntityManager entityManager;
 
     private final static String GENRE_1_NAME = "Genre 1";
     private final static String GENRE_5_NAME = "Genre 5";
@@ -46,12 +44,8 @@ class GenreRepositorySpringDataTest {
     @DirtiesContext
     @DisplayName("должен добавлять новый жанр")
     void shouldAdd() {
-        TypedQuery<Genre> query = entityManager.getEntityManager()
-                .createQuery("select g from Genre g where g.name = :name", Genre.class)
-                .setParameter("name", GENRE_5_NAME);
-        assertThrowsExactly(NoResultException.class, query::getSingleResult);
-        genreRepository.save(new Genre(GENRE_5_NAME));
-        assertDoesNotThrow(query::getSingleResult);
+        Genre genre = genreRepository.save(new Genre(GENRE_5_NAME));
+        assertEquals(genre, entityManager.find(Genre.class, genre.getId()));
     }
 
     private Optional<Genre> getByName(String name) {

@@ -9,8 +9,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.util.DataProducer;
 
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +21,7 @@ class AuthorRepositorySpringDataTest {
     @Autowired
     private AuthorRepository authorRepository;
     @Autowired
-    TestEntityManager entityManager;
+    private TestEntityManager entityManager;
 
     private final static String AUTHOR_1_NAME = "Author 1";
     private final static String AUTHOR_3_NAME = "Author 3";
@@ -46,12 +44,8 @@ class AuthorRepositorySpringDataTest {
     @DirtiesContext
     @DisplayName("должен добавлять нового автора")
     void shouldAdd() {
-        TypedQuery<Author> query = entityManager.getEntityManager()
-                .createQuery("select a from Author a where a.name = :name", Author.class)
-                .setParameter("name", AUTHOR_3_NAME);
-        assertThrowsExactly(NoResultException.class, query::getSingleResult);
-        authorRepository.save(new Author(AUTHOR_3_NAME));
-        assertDoesNotThrow(query::getSingleResult);
+        Author author = authorRepository.save(new Author(AUTHOR_3_NAME));
+        assertEquals(author, entityManager.find(Author.class, author.getId()));
     }
 
     private Optional<Author> getByName(String name) {
