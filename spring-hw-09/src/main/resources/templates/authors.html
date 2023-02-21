@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{main-library-title}">Library</title>
+    <style>
+        .data-table {
+            border: 1px solid;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .data-table tr td, th {
+            padding: 5px;
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+<table style="border: 0 solid; border-collapse: collapse; width: 50%;">
+    <tbody>
+    <tr style="height: 100px;">
+        <td style="text-align: center">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%">
+                <tbody>
+                <tr>
+                    <td style="width: max-content">
+                        <h2><a href="home.html" style="text-align: center" th:href="@{/}"
+                               th:text="#{main-library-title}">Library</a></h2>
+                    </td>
+                    <td style="width: 60px">
+                        <div>
+                            <a href="#" th:href="@{/(lang=en)}">EN</a>
+                            <a href="#" th:href="@{/(lang=ru)}">RU</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="vertical-align: top; width: 100px;">
+                        <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                            <tbody>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="books.html" th:href="@{/books}" th:text="#{side-menu-books-element(${booksCount})}">Books (0)</a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="authors.html" th:href="@{/authors}" th:text="#{side-menu-authors-element(${authorsCount})}">Authors (0)</a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td style="width: 100%; height: 10px;">
+                                    <a href="genres.html" th:href="@{/genres}" th:text="#{side-menu-genres-element(${genresCount})}">Genres (0)</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top">
+                        <h3 style="text-align: center" th:text="#{page-header-authors-all}">All authors</h3>
+                        <table class="data-table">
+                            <thead>
+                            <tr>
+                                <th th:text="#{table-header-authors-name}">Name</th>
+                                <th th:text="#{table-header-authors-books-by}">Books by author</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="author : ${authors}" th:object="${author}">
+                                <td th:text="*{name}">Author 1</td>
+                                <td style="text-align: center">
+                                    <a href="books.html" th:href="@{books/(author=*{name})}"
+                                       th:text="#{link-view}">view</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

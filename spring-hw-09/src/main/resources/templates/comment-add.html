@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{main-library-title}">Library</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        div {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<table style="border: 0 solid; border-collapse: collapse; width: 50%;">
+    <tbody>
+    <tr style="height: 100px;">
+        <td style="text-align: center">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%">
+                <tbody>
+                <tr>
+                    <td style="width: max-content">
+                        <h2><a href="home.html" style="text-align: center" th:href="@{/}"
+                               th:text="#{main-library-title}">Library</a></h2>
+                    </td>
+                    <td style="width: 60px">
+                        <div>
+                            <a href="#" th:href="@{/(lang=en)}">EN</a>
+                            <a href="#" th:href="@{/(lang=ru)}">RU</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="vertical-align: top; width: 100px;">
+                        <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                            <tbody>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="books.html" th:href="@{/books}" th:text="#{side-menu-books-element(${booksCount})}">Books (0)</a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="authors.html" th:href="@{/authors}" th:text="#{side-menu-authors-element(${authorsCount})}">Authors (0)</a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td style="width: 100%; height: 10px;">
+                                    <a href="genres.html" th:href="@{/genres}" th:text="#{side-menu-genres-element(${genresCount})}">Genres (0)</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top; text-align: center">
+                        <h3 th:text="#{page-header-comment-add(${bookName})}">Adding new comment for Book</h3>
+                        <form id="form" method="post" th:action="@{/comments/add}">
+                            <input name="book" th:value="${bookName}" type="hidden">
+                            <div>
+                                <label for="new-text"
+                                       th:text="#{label-comment-add-text}">Comment text:</label>
+                                <input id="new-text" name="text" th:value="''" value="New text"/>
+                            </div>
+                            <div>
+                                <button type="submit" th:text="#{button-add}">Add</button>
+                                <a href="books.html" th:href="@{/comments/cancel(book=${bookName})}">
+                                    <button type="button" th:text="#{button-cancel}">Cancel</button>
+                                </a>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
