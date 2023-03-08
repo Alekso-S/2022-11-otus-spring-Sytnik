@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+<body>
+<table style="border: 0 solid; border-collapse: collapse; width: 990px;">
+    <tbody>
+    <tr style="height: 100px;">
+        <td style="text-align: center">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%">
+                <tbody>
+                <tr>
+                    <td style="width: max-content">
+                        <h2><a href="home.html" style="text-align: center" th:href="@{/}">Library</a></h2>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="vertical-align: top; width: 100px;">
+                        <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                            <tbody>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="books.html" th:href="@{/books}">
+                                        Books (<span th:text="${booksCount}">0</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="authors.html" th:href="@{/authors}">
+                                        Authors (<span th:text="${authorsCount}">0</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td style="width: 100%; height: 10px;">
+                                    <a href="genres.html" th:href="@{/genres}">
+                                        Genres (<span th:text="${genresCount}">0</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top; text-align: center">
+                        <h3>Select category</h3>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

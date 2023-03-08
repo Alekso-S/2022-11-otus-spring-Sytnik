@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <style>
+        .data-table {
+            border: 1px solid;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .data-table tr td, th {
+            padding: 5px;
+            border: 1px solid;
+        }
+    </style>
+
+    <script>
+        function getAll() {
+            fetch("api/genres")
+                .then(res => res.json())
+                .then(value => {
+                    value.forEach(genre => {
+                        let row = document.getElementById("genres-table").insertRow(-1)
+                        let cell1 = row.insertCell()
+                        cell1.append(genre.name)
+                        let cell2 = row.insertCell()
+                        cell2.style.textAlign = 'center'
+                        let a = document.createElement("a")
+                        a.setAttribute("href", `/books?genre=${genre.name}`)
+                        a.append("view")
+                        cell2.appendChild(a)
+                    })
+                })
+        }
+    </script>
+</head>
+<body onload="getAll()">
+<table style="border: 0 solid; border-collapse: collapse; width: 990px;">
+    <tbody>
+    <tr style="height: 100px;">
+        <td style="text-align: center">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%">
+                <tbody>
+                <tr>
+                    <td style="width: max-content">
+                        <h2><a href="home.html" style="text-align: center" th:href="@{/}">Library</a></h2>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="vertical-align: top; width: 100px;">
+                        <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                            <tbody>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="books.html" th:href="@{/books}">
+                                        Books (<span th:text="${booksCount}">0</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td>
+                                    <a href="authors.html" th:href="@{/authors}">
+                                        Authors (<span th:text="${authorsCount}">0</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr style="height: 50px;">
+                                <td style="width: 100%; height: 10px;">
+                                    <a href="genres.html" th:href="@{/genres}">
+                                        Genres (<span th:text="${genresCount}">0</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top">
+                        <h3 style="text-align: center">All genres</h3>
+                        <table class="data-table" id="genres-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Books of genre</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
