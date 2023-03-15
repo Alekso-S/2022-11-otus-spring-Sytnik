@@ -1,7 +1,6 @@
 package ru.otus.spring.repository;
 
 import org.springframework.context.annotation.Lazy;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.domain.Book;
 
@@ -19,8 +18,7 @@ public class ReactiveBookRepositoryCustomImpl implements ReactiveBookRepositoryC
 
     @Override
     public Mono<Void> deleteWithComments(Book book) {
-        return Flux.merge(bookRepository.delete(book),
-                        commentRepository.deleteByBookId(book.getId()))
-                .then();
+        return bookRepository.delete(book)
+                .then(commentRepository.deleteByBookId(book.getId()));
     }
 }

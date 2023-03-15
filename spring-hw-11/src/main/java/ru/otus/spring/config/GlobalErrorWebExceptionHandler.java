@@ -18,8 +18,8 @@ import ru.otus.spring.exception.BookAlreadyExistsEx;
 import ru.otus.spring.exception.BookNotFoundEx;
 import ru.otus.spring.exception.CommentNotFoundEx;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
@@ -44,7 +44,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
         Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
         Throwable throwable = getError(request);
-        if (List.of(
+        if (Set.of(
                 BookNotFoundEx.class,
                 CommentNotFoundEx.class,
                 BookAlreadyExistsEx.class
