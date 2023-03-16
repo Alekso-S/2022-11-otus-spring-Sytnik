@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,18 +16,19 @@ import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.dto.BookDto;
 import ru.otus.spring.dto.rest.BookRestDto;
+import ru.otus.spring.security.SecurityConfig;
 import ru.otus.spring.service.BookService;
 import ru.otus.spring.util.DataProducer;
 
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookRestController.class)
+@Import(SecurityConfig.class)
 @DisplayName("REST контроллер книг должен")
 class BookRestControllerTest {
 
@@ -91,8 +93,7 @@ class BookRestControllerTest {
 
         mockMvc.perform(post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookRestDto))
-                        .with(csrf()))
+                        .content(objectMapper.writeValueAsString(bookRestDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookDto)));
     }
@@ -101,8 +102,7 @@ class BookRestControllerTest {
     @WithMockUser(username = "user")
     @DisplayName("удалять книгу")
     void shouldDelete() throws Exception {
-        mockMvc.perform(delete("/api/books/{book}", BOOK_1_ID)
-                        .with(csrf()))
+        mockMvc.perform(delete("/api/books/{book}", BOOK_1_ID))
                 .andExpect(status().isOk());
 
         verify(bookService, times(1)).deleteById(BOOK_1_ID);

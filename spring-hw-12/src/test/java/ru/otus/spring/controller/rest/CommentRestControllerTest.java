@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,19 +14,20 @@ import ru.otus.spring.converter.CommentConverter;
 import ru.otus.spring.domain.Comment;
 import ru.otus.spring.dto.CommentDto;
 import ru.otus.spring.dto.rest.CommentRestDto;
+import ru.otus.spring.security.SecurityConfig;
 import ru.otus.spring.service.CommentService;
 import ru.otus.spring.util.DataProducer;
 
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.otus.spring.util.DataProducer.getBookById;
 
 @WebMvcTest(CommentRestController.class)
+@Import(SecurityConfig.class)
 @DisplayName("REST контроллер комментариев должен")
 class CommentRestControllerTest {
 
@@ -66,8 +68,7 @@ class CommentRestControllerTest {
 
         mockMvc.perform(post("/api/comments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(commentRestDto))
-                        .with(csrf()))
+                        .content(objectMapper.writeValueAsString(commentRestDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(commentDto)));
     }
@@ -80,8 +81,7 @@ class CommentRestControllerTest {
 
         mockMvc.perform(put("/api/comments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(commentRestDto))
-                        .with(csrf()))
+                        .content(objectMapper.writeValueAsString(commentRestDto)))
                 .andExpect(status().isOk());
 
         verify(commentService, times(1)).updateById(COMMENT_1_ID, COMMENT_1_TEXT_UPDATED);
@@ -91,8 +91,7 @@ class CommentRestControllerTest {
     @WithMockUser(username = "user")
     @DisplayName("удалять комментарий")
     void shouldDelete() throws Exception {
-        mockMvc.perform(delete("/api/comments/{commentId}", COMMENT_1_ID)
-                        .with(csrf()))
+        mockMvc.perform(delete("/api/comments/{commentId}", COMMENT_1_ID))
                 .andExpect(status().isOk());
 
         verify(commentService, times(1)).deleteById(COMMENT_1_ID);
