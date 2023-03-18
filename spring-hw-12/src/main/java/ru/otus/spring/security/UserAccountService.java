@@ -26,7 +26,7 @@ public class UserAccountService implements UserDetailsService {
                 .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
                 .username(userAccount.getUsername())
                 .password(userAccount.getPassword())
-                .roles(userAccount.getRoles())
+                .roles(userAccount.getRoles().toArray(String[]::new))
                 .build();
     }
 }

@@ -28,12 +28,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GenreRestControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
-    GenreService genreService;
+    private GenreService genreService;
 
     @Test
     @WithMockUser(username = "user")

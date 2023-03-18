@@ -47,8 +47,8 @@ public class InitChangelog {
     @ChangeSet(order = "003", id = "add-users", author = "Alekso-S")
     public void addUsers(UserAccountRepository userAccountRepository) {
         List<UserAccount> userAccounts = new ArrayList<>();
-        userAccounts.add(new UserAccount("user", "user", new String[]{"USER"}));
-        userAccounts.add(new UserAccount("admin", "admin", new String[]{"ADMIN"}));
+        userAccounts.add(new UserAccount("user", "user", List.of("USER")));
+        userAccounts.add(new UserAccount("admin", "admin", List.of("ADMIN")));
         userAccountRepository.saveAll(userAccounts);
     }
 }

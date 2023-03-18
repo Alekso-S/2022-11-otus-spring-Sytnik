@@ -33,12 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookRestControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
-    BookService bookService;
+    private BookService bookService;
 
     private final static String AUTHOR_1_NAME = "Author 1";
     private final static String GENRE_1_NAME = "Genre 1";

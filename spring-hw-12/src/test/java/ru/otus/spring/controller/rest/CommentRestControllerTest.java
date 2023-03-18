@@ -32,12 +32,12 @@ import static ru.otus.spring.util.DataProducer.getBookById;
 class CommentRestControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
-    CommentService commentService;
+    private CommentService commentService;
 
     private final static String BOOK_1_ID = "1";
     private static final String COMMENT_9_TEXT = "Comment 9";
