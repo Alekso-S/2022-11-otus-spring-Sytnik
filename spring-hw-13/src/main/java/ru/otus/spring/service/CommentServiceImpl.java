@@ -1,6 +1,7 @@
 package ru.otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.converter.CommentConverter;
@@ -49,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @PreAuthorize("hasPermission(#id,'ru.otus.spring.domain.Comment','WRITE') || hasRole('ADMIN')")
     public CommentDto updateById(String id, String text) throws CommentNotFoundEx {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundEx(id));
@@ -58,6 +60,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @PreAuthorize("hasPermission(#id,'ru.otus.spring.domain.Comment','DELETE') || hasRole('ADMIN')")
     public void deleteById(String id) throws CommentNotFoundEx {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundEx(id));

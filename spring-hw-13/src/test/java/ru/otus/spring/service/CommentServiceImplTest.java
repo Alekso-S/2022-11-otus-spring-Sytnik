@@ -72,9 +72,9 @@ class CommentServiceImplTest {
     @DisplayName("изменять и возвращать комментарий по идентификатору")
     @Test
     void shouldUpdateAndReturnCommentById() throws CommentNotFoundEx {
-        Comment comment = new Comment(COMMENT_1_ID, getBookByName(BOOK_1_NAME).orElseThrow(), COMMENT_1_TEXT_UPDATED);
+        Comment comment = getCommentById(COMMENT_1_ID).orElseThrow();
+        comment.setText(COMMENT_1_TEXT_UPDATED);
         when(commentRepository.findById(COMMENT_1_ID)).thenReturn(getCommentById(COMMENT_1_ID));
-        when(commentRepository.save(any())).thenReturn(comment);
 
         assertEquals(comment.toDtoWithBookName(), commentService.updateById(COMMENT_1_ID, COMMENT_1_TEXT_UPDATED));
     }

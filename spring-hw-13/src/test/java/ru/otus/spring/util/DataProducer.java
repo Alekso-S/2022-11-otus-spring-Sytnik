@@ -23,17 +23,17 @@ public class DataProducer {
     private final static Book BOOK_2 = new Book("2", BOOK_2_NAME, AUTHOR_1, List.of(GENRE_2, GENRE_3));
     private final static Book BOOK_3 = new Book("3", BOOK_3_NAME, AUTHOR_2, List.of(GENRE_3, GENRE_4));
     private final static Book BOOK_4 = new Book("4", BOOK_4_NAME, AUTHOR_2, List.of(GENRE_1, GENRE_4));
-    private final static Comment COMMENT_1 = new Comment("1", BOOK_1, "Comment 1 text");
-    private final static Comment COMMENT_2 = new Comment("2", BOOK_1, "Comment 2 text");
-    private final static Comment COMMENT_3 = new Comment("3", BOOK_2, "Comment 3 text");
-    private final static Comment COMMENT_4 = new Comment("4", BOOK_2, "Comment 4 text");
-    private final static Comment COMMENT_5 = new Comment("5", BOOK_3, "Comment 5 text");
-    private final static Comment COMMENT_6 = new Comment("6", BOOK_3, "Comment 6 text");
-    private final static Comment COMMENT_7 = new Comment("7", BOOK_4, "Comment 7 text");
-    private final static Comment COMMENT_8 = new Comment("8", BOOK_4, "Comment 8 text");
     private final static UserAccount ADMIN = new UserAccount("1", "admin", "pwd", List.of("ADMIN"));
     private final static UserAccount USER_1 = new UserAccount("2", "user1", "pwd", List.of("USER"));
     private final static UserAccount USER_2 = new UserAccount("3", "user2", "pwd", List.of("USER"));
+    private final static Comment COMMENT_1 = new Comment("1", BOOK_1, "Comment 1 text", USER_1);
+    private final static Comment COMMENT_2 = new Comment("2", BOOK_1, "Comment 2 text", USER_2);
+    private final static Comment COMMENT_3 = new Comment("3", BOOK_2, "Comment 3 text", USER_1);
+    private final static Comment COMMENT_4 = new Comment("4", BOOK_2, "Comment 4 text", USER_2);
+    private final static Comment COMMENT_5 = new Comment("5", BOOK_3, "Comment 5 text", USER_1);
+    private final static Comment COMMENT_6 = new Comment("6", BOOK_3, "Comment 6 text", USER_2);
+    private final static Comment COMMENT_7 = new Comment("7", BOOK_4, "Comment 7 text", USER_1);
+    private final static Comment COMMENT_8 = new Comment("8", BOOK_4, "Comment 8 text", USER_2);
 
     public static List<Author> getAllAuthors() {
         return List.of(AUTHOR_1, AUTHOR_2);
