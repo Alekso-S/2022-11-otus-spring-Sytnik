@@ -55,20 +55,18 @@ public class JobConfig {
     @Bean
     public Job job1(JobBuilderFactory jobBuilderFactory) {
         return jobBuilderFactory.get(JOB_1_NAME)
-                .flow(eraseStep())
+                .start(eraseStep())
                 .next(bookStep1())
                 .next(commentStep1())
-                .end()
                 .build();
     }
 
     @Bean
     public Job job2(JobBuilderFactory jobBuilderFactory) {
         return jobBuilderFactory.get(JOB_2_NAME)
-                .flow(eraseStep())
+                .start(eraseStep())
                 .next(bookStep2())
                 .next(commentStep2())
-                .end()
                 .build();
     }
 
@@ -147,11 +145,11 @@ public class JobConfig {
 
     @Bean
     public ItemWriter<BookDto> bookWriter() {
-        return new BookWriter(jpaAuthorRepository, jpaGenreRepository, jpaBookRepository);
+        return new BookWriter();
     }
 
     @Bean
     public ItemWriter<CommentDto> commentWriter() {
-        return new CommentWriter(jpaBookRepository, jpaCommentRepository);
+        return new CommentWriter(jpaAuthorRepository, jpaGenreRepository, jpaBookRepository, jpaCommentRepository);
     }
 }

@@ -1,6 +1,7 @@
 package ru.otus.spring.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.otus.spring.model.jpa.JpaBook;
 import ru.otus.spring.model.jpa.JpaGenre;
 import ru.otus.spring.model.mongo.MongoBook;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class BookDto {
     private String name;
     private String authorName;
