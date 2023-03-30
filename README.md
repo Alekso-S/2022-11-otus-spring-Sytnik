@@ -14,4 +14,5 @@
 - spring-hw-09: Домашнее задание 09: Spring MVC + View
 - spring-hw-10: Домашнее задание 10: Spring MVC + AJAX
 - spring-hw-11: Домашнее задание 11: Spring WebFlux
-- spring-hw-13: Домашнее задание 11: Spring Security + ACL
+- spring-hw-12: Домашнее задание 12: Spring Security
+- spring-hw-13: Домашнее задание 13: Spring Security + ACL
