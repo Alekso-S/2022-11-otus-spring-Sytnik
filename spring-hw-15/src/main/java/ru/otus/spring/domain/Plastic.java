@@ -7,8 +7,8 @@ import ru.otus.spring.enums.Assignment;
 @Data
 @AllArgsConstructor
 public class Plastic {
-    Assignment assignment;
-    float volume;
+    private Assignment assignment;
+    private float volume;
 
     public Plastic(float volume) {
         this.volume = volume;

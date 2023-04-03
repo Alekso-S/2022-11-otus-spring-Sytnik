@@ -2,9 +2,9 @@ package ru.otus.spring.domain;
 
 public class Cap extends BaseProduct {
 
-    private static final float standardWeight = 2;
+    public static final float STANDARD_WEIGHT = 2;
 
     public Cap() {
-        super(standardWeight);
+        super(STANDARD_WEIGHT);
     }
 }
