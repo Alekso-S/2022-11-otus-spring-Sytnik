@@ -1,5 +1,8 @@
 package ru.otus.spring.health;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Synchronized;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
@@ -10,6 +13,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 @Component
+@Getter(onMethod_={@Synchronized})
+@Setter(onMethod_={@Synchronized})
 public class SecurityHealthIndicator implements HealthIndicator {
 
     private final static int CALM_DOWN_TIME_SEC = 60;
@@ -21,12 +26,12 @@ public class SecurityHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
-        if (dateTime.until(LocalDateTime.now(), ChronoUnit.SECONDS) <= CALM_DOWN_TIME_SEC) {
+        if (getDateTime().until(LocalDateTime.now(), ChronoUnit.SECONDS) <= CALM_DOWN_TIME_SEC) {
             return Health.down()
                     .withDetails(Map.of(
-                            "user", user,
-                            "method", method,
-                            "url", url))
+                            "user", getUser(),
+                            "method", getMethod(),
+                            "url", getUrl()))
                     .build();
         } else {
             return Health.up()
@@ -35,9 +40,9 @@ public class SecurityHealthIndicator implements HealthIndicator {
     }
 
     public void registerAccessAttempt(HttpServletRequest request) {
-        user = request.getRemoteUser();
-        method = request.getMethod();
-        url = request.getRequestURI();
-        dateTime = LocalDateTime.now();
+        setUser(request.getRemoteUser());
+        setMethod(request.getMethod());
+        setUrl(request.getRequestURI());
+        setDateTime(LocalDateTime.now());
     }
 }
