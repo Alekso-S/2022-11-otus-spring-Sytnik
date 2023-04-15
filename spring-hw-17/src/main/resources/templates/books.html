@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <style>
+        .data-table {
+            border: 1px solid;
+            border-collapse: collapse;
+            width: 100%;
+            text-align: start;
+        }
+
+        .data-table tr td, th {
+            padding: 5px;
+            border: 1px solid;
+        }
+
+        .inner-table tr td {
+            border: 0;
+            padding: unset;
+        }
+    </style>
+
+    <script>
+        function fillTable() {
+            let authorName = '[[${authorName}]]'
+            let genreName = '[[${genreName}]]'
+            fetch('/api/books'
+                + (authorName !== '' ? `?author=${authorName}` : '')
+                + (genreName !== '' ? `?genre=${genreName}` : '')
+            )
+                .then(res => res.json())
+                .then(res => {
+                    res.forEach(book => {
+                        let row = document.getElementById('table-books').getElementsByTagName('tbody')[0].insertRow()
+                        row.setAttribute('bookId', book.id)
+                        addNameCell(row, book)
+                        addAuthorCell(row, book)
+                        addGenresCell(row, book)
+                        addCommentsCell(row, book)
+                        addDeletionCell(row, book)
+                    })
+                });
+        }
+
+        function startAdding() {
+            hideMainControls()
+
+            let row = document.getElementById("table-books").getElementsByTagName("tbody")[0].insertRow();
+            row.setAttribute("id", "row-work")
+            addNameCell()
+            addAuthorCell()
+            addGenresCell()
+
+            showAddingControls()
+
+            function addNameCell() {
+                let cell = row.insertCell();
+                let input = document.createElement("input")
+                input.style.width = "-webkit-calc(100% - 10px)"
+                input.style.borderStyle = "dotted"
+                input.setAttribute("id", "input-name")
+                cell.appendChild(input);
+            }
+
+            function addAuthorCell() {
+                let cell = row.insertCell();
+                fetch("/api/authors")
+                    .then(value => value.json())
+                    .then(value => {
+                        let list = document.createElement("datalist");
+                        list.setAttribute("id", "author-list");
+                        value.forEach(author => {
+                            let option = document.createElement("option");
+                            option.setAttribute("value", author.name)
+                            list.appendChild(option);
+                        })
+                        cell.appendChild(list);
+                    })
+                let input = document.createElement("input")
+                input.style.width = "-webkit-calc(100% - 10px)"
+                input.style.borderStyle = "dotted"
+                input.setAttribute("id", "input-author")
+                input.setAttribute("list", "author-list")
+                cell.appendChild(input);
+            }
+
+            function addGenresCell() {
+                let cell = row.insertCell();
+                fetch("/api/genres")
+                    .then(value => value.json())
+                    .then(value => {
+                        let list = document.createElement("datalist");
+                        list.setAttribute("id", "genres-list");
+                        value.forEach(author => {
+                            let option = document.createElement("option");
+                            option.setAttribute("value", author.name)
+                            list.appendChild(option);
+                        })
+                        cell.appendChild(list);
+                    })
+                let input = document.createElement("input")
+                input.style.width = "-webkit-calc(100% - 10px)"
+                input.style.borderStyle = "dotted"
+                input.setAttribute("id", "input-genres")
+                input.setAttribute("list", "genres-list")
+                cell.appendChild(input);
+            }
+        }
+
+        function confirmAdding() {
+            const bookRq = {
+                name: document.getElementById("input-name").value,
+                authorName: document.getElementById("input-author").value,
+                genreNames: document.getElementById("input-genres").value
+            }
+            fetch("/api/books", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookRq)
+            })
+                .then(response => response.json())
+                .then(bookRs => {
+                    let newRow = document.createElement("tr");
+                    newRow.setAttribute('bookId', bookRs.id)
+                    addNameCell(newRow, bookRs)
+                    addAuthorCell(newRow, bookRs)
+                    addGenresCell(newRow, bookRs)
+                    addCommentsCell(newRow, bookRs)
+                    addDeletionCell(newRow, bookRs)
+                    let workRow = document.getElementById("row-work");
+                    workRow.parentElement.insertBefore(newRow, workRow)
+                    finishAdding()
+                })
+        }
+
+        function finishAdding() {
+            hideAddingControls()
+            document.getElementById("row-work").remove()
+            showMainControls()
+        }
+
+        // noinspection JSUnusedGlobalSymbols
+        function deleteBook(anchor) {
+            let row = anchor.parentElement.parentElement;
+            fetch("api/books/" + row.getAttribute('bookId'), {
+                method: 'DELETE',
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(res.statusText);
+                    }
+                })
+                .then(() => row.remove())
+                .catch(() => {
+                    row.style.backgroundColor = 'red'
+                    setTimeout(() => row.style.backgroundColor = 'white', 100)
+                })
+        }
+
+        function addNameCell(row, book) {
+            let cell = row.insertCell()
+            cell.append(book.name)
+        }
+
+        function addAuthorCell(row, book) {
+            let cell = row.insertCell()
+            cell.append(book.author.name)
+        }
+
+        function addGenresCell(row, book) {
+            let cell = row.insertCell()
+            let table = document.createElement("table");
+            table.setAttribute("class", "inner-table")
+            cell.appendChild(table)
+            book.genres.forEach(genre => table.insertRow().insertCell().append(genre.name))
+        }
+
+        function addCommentsCell(row, book) {
+            let cell = row.insertCell()
+            cell.style.textAlign = 'center'
+            let anchor = document.createElement("a")
+            cell.appendChild(anchor)
+            anchor.setAttribute("href", `/comments?bookId=${book.id}`)
+            anchor.append("view")
+        }
+
+        function addDeletionCell(row) {
+            let cell = row.insertCell()
+            cell.style.textAlign = 'center'
+            let anchor = document.createElement("a")
+            cell.appendChild(anchor)
+            anchor.setAttribute("href", "#")
+            anchor.setAttribute('onClick', 'deleteBook(this)')
+            anchor.append("delete")
+        }
+
+        function hideMainControls() {
+            document.getElementById("button-add").hidden = true
+        }
+
+        function showAddingControls() {
+            document.getElementById("button-save").hidden = false
+            document.getElementById("button-cancel").hidden = false
+        }
+
+        function hideAddingControls() {
+            document.getElementById("button-save").hidden = true
+            document.getElementById("button-cancel").hidden = true
+        }
+
+        function showMainControls() {
+            document.getElementById("button-add").hidden = false
+        }
+    </script>
+</head>
+<body onload="fillTable()">
+<table style="border: 0 solid; border-collapse: collapse; width: 990px;">
+    <tbody>
+    <tr th:insert="~{fragments/header :: header}"></tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td th:insert="~{fragments/side-menu}"></td>
+                    <td style="vertical-align: top; text-align: center">
+                        <h3 th:if="${authorName == null && genreName == null}">All books</h3>
+                        <h3 th:if="${authorName != null}">Books by <span th:text="${authorName}">author</span></h3>
+                        <h3 th:if="${genreName != null}">Books of <span th:text="${genreName}">genre</span></h3>
+                        <table class="data-table" id="table-books">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Author</th>
+                                <th>Genres</th>
+                                <th>Comments</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <p></p>
+                        <button id="button-add" onclick="startAdding()">
+                            Add
+                        </button>
+                        <button id="button-save" onclick="confirmAdding()" hidden>
+                            Save
+                        </button>
+                        <button id="button-cancel" onclick="finishAdding()" hidden>
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

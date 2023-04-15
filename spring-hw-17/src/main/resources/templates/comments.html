@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <style>
+        .data-table {
+            border: 1px solid;
+            border-collapse: collapse;
+            width: 100%;
+            text-align: start;
+        }
+
+        .data-table tr td, th {
+            padding: 5px;
+            border: 1px solid;
+        }
+    </style>
+
+    <script>
+        function fillTable() {
+            fetch("/api/comments?bookId=[[${bookId}]]")
+                .then(res => res.json())
+                .then(res => {
+                    res.forEach(comment => {
+                        let row = document.getElementById("table-comments").getElementsByTagName("tbody")[0].insertRow()
+                        row.setAttribute('commentId', comment.id)
+                        addTextCell(row, comment.text)
+                        addUserCell(row, comment.userName)
+                        addEditionCell(row)
+                        addDeletionCell(row)
+                    })
+                })
+        }
+
+        function startAdding() {
+            hideMainControls()
+
+            let row = document.getElementById("table-comments").getElementsByTagName("tbody")[0].insertRow();
+            row.setAttribute("id", "row-work")
+            addTextCell()
+
+            showAddingControls()
+
+            function addTextCell() {
+                let cell = row.insertCell();
+                let input = document.createElement("input")
+                input.style.width = "-webkit-calc(100% - 10px)"
+                input.style.borderStyle = "dotted"
+                input.setAttribute("id", "input-text")
+                cell.appendChild(input);
+            }
+
+            function showAddingControls() {
+                document.getElementById("button-save-adding").hidden = false
+                document.getElementById("button-cancel-adding").hidden = false
+            }
+        }
+
+        function confirmAdding() {
+            const commentRq = {
+                bookId: "[[${bookId}]]",
+                text: document.getElementById("input-text").value
+            }
+            fetch("/api/comments", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(commentRq)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res
+                    }
+                    throw new Error(res.statusText);
+                })
+                .then(response => response.json())
+                .then(commentRs => {
+                    let newRow = document.createElement("tr");
+                    newRow.setAttribute('commentId', commentRs.id)
+                    addTextCell(newRow, document.getElementById("input-text").value)
+                    addUserCell(newRow, document.getElementById('username').textContent)
+                    addEditionCell(newRow)
+                    addDeletionCell(newRow)
+                    let workRow = document.getElementById("row-work");
+                    workRow.parentElement.insertBefore(newRow, workRow)
+                    finishAdding()
+                })
+        }
+
+        function finishAdding() {
+            hideAddingControls()
+            document.getElementById("row-work").remove()
+            showMainControls()
+        }
+
+        // noinspection JSUnusedGlobalSymbols
+        function startEditing(anchor) {
+            hideMainControls()
+
+            let origRow = anchor.parentElement.parentElement;
+            origRow.setAttribute("id", "row-orig")
+            let workRow = document.createElement("tr");
+            workRow.setAttribute("id", "row-work")
+            addTextCell()
+            origRow.hidden = true
+            origRow.parentElement.insertBefore(workRow, origRow)
+
+            showEditingControls()
+
+            function addTextCell() {
+                let cell = workRow.insertCell();
+                let input = document.createElement("input")
+                input.style.width = "-webkit-calc(100% - 10px)"
+                input.style.borderStyle = "dotted"
+                input.setAttribute("id", "input-text")
+                input.value = origRow.getElementsByTagName('td')[0].textContent
+                cell.appendChild(input);
+            }
+
+            function showEditingControls() {
+                document.getElementById("button-save-editing").hidden = false
+                document.getElementById("button-cancel-editing").hidden = false
+            }
+        }
+
+        function confirmEditing() {
+            let origRow = document.getElementById("row-orig");
+            const comment = {
+                id: origRow.getAttribute('commentId'),
+                text: document.getElementById("input-text").value
+            }
+            fetch("/api/comments", {
+                method: "PUT",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(comment)
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(res.statusText);
+                    }
+                })
+                .then(() => {
+                    origRow.getElementsByTagName("td")[0].textContent = document.getElementById("input-text").value;
+                    finishEditing()
+                })
+                .catch(() => {
+                    let workRow = document.getElementById("row-work");
+                    workRow.style.backgroundColor = 'red'
+                    setTimeout(() => workRow.style.backgroundColor = 'white', 100)
+                })
+        }
+
+        function finishEditing() {
+            hideEditingControls()
+            document.getElementById("row-work").remove()
+            document.getElementById("row-orig").hidden = false
+            document.getElementById("row-orig").removeAttribute("id")
+            showMainControls()
+        }
+
+        // noinspection JSUnusedGlobalSymbols
+        function deleteComment(anchor) {
+            let row = anchor.parentElement.parentElement;
+            fetch("api/comments/" + row.getAttribute('commentId'), {
+                method: 'DELETE',
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(res.statusText);
+                    }
+                })
+                .then(() => row.remove())
+                .catch(() => {
+                    row.style.backgroundColor = 'red'
+                    setTimeout(() => row.style.backgroundColor = 'white', 100)
+                })
+        }
+
+        function addTextCell(row, text) {
+            let cell = row.insertCell()
+            cell.append(text)
+        }
+
+        function addUserCell(row, username) {
+            let cell = row.insertCell()
+            cell.append(username)
+        }
+
+        function addEditionCell(row) {
+            let cell = row.insertCell()
+            cell.style.textAlign = 'center'
+            let anchor = document.createElement("a")
+            cell.appendChild(anchor)
+            anchor.setAttribute("href", '#')
+            anchor.setAttribute("onClick", "startEditing(this)")
+            anchor.setAttribute("class", "control")
+            anchor.append("edit")
+        }
+
+        function addDeletionCell(row) {
+            let cell = row.insertCell()
+            cell.style.textAlign = 'center'
+            let anchor = document.createElement("a")
+            cell.appendChild(anchor)
+            anchor.setAttribute("href", "#")
+            anchor.setAttribute("onClick", 'deleteComment(this)')
+            anchor.setAttribute("class", "control")
+            anchor.append("delete")
+        }
+
+        function showMainControls() {
+            for (let element of document.getElementsByClassName("control")) {
+                element.hidden = false;
+            }
+        }
+
+        function hideMainControls() {
+            for (let element of document.getElementsByClassName("control")) {
+                element.hidden = true;
+            }
+        }
+
+        function hideAddingControls() {
+            document.getElementById("button-save-adding").hidden = true
+            document.getElementById("button-cancel-adding").hidden = true
+        }
+
+        function hideEditingControls() {
+            document.getElementById("button-save-editing").hidden = true
+            document.getElementById("button-cancel-editing").hidden = true
+        }
+    </script>
+</head>
+<body onload="fillTable()">
+<table style="border: 0 solid; border-collapse: collapse; width: 990px;">
+    <tbody>
+    <tr th:insert="~{fragments/header :: header}"></tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td th:insert="~{fragments/side-menu}"></td>
+                    <td style="vertical-align: top; text-align: center">
+                        <h3>Comments for '<span th:text="${bookName}">Book</span>'</h3>
+                        <table class="data-table" id="table-comments">
+                            <thead>
+                            <tr>
+                                <th>Text</th>
+                                <th>User</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <p></p>
+                        <button id="button-add" onclick="startAdding()" class="control">
+                            Add
+                        </button>
+                        <button id="button-save-adding" onclick="confirmAdding()" hidden>
+                            Save
+                        </button>
+                        <button id="button-cancel-adding" onclick="finishAdding()" hidden>
+                            Cancel
+                        </button>
+                        <button id="button-save-editing" onclick="confirmEditing()" hidden>
+                            Save
+                        </button>
+                        <button id="button-cancel-editing" onclick="finishEditing()" hidden>
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
