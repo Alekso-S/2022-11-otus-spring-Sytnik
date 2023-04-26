@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+<body>
+<table style="border: 0 solid; border-collapse: collapse; width: 990px;">
+    <tbody>
+    <tr th:insert="~{fragments/header :: header}"></tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td th:insert="~{fragments/side-menu}"></td>
+                    <td style="vertical-align: top; text-align: center">
+                        <h3>Select category</h3>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

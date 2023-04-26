@@ -18,4 +18,5 @@
 - spring-hw-13: Домашнее задание 13: Spring Security + ACL
 - spring-hw-14: Домашнее задание 14: Spring Batch
 - spring-hw-15: Домашнее задание 15: Spring Integration
-- spring-hw-15: Домашнее задание 17: Docker
+- spring-hw-16: Домашнее задание 16: Spring Boot Actuator, Spring Data Rest
+- spring-hw-17: Домашнее задание 17: Docker
