@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<tr th:fragment="header" style="height: 100px;">
+    <td style="text-align: center">
+        <table style="border: 0 solid; border-collapse: collapse; width: 100%">
+            <tbody>
+            <tr>
+                <td style="width: max-content">
+                    <h2><a href="home.html" style="text-align: center" th:href="@{/}">Library</a></h2>
+                </td>
+                <td style="width: 0; white-space: nowrap">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <b id="username" th:text="${username}">username</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a th:if="${username == 'anonymous'}" href="/login">log in</a>
+                                <a th:if="${username != 'anonymous'}" href="/logout">log out</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+</body>
+</html>

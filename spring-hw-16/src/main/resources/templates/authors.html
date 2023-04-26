@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <style>
+        .data-table {
+            border: 1px solid;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .data-table tr td, th {
+            padding: 5px;
+            border: 1px solid;
+        }
+    </style>
+
+    <script>
+        function getAll() {
+            fetch("api/authors")
+                .then(res => res.json())
+                .then(value => {
+                    value.forEach(author => {
+                        let row = document.getElementById("authors-table").insertRow(-1)
+                        let cell1 = row.insertCell()
+                        cell1.append(author.name)
+                        let cell2 = row.insertCell()
+                        cell2.style.textAlign = 'center'
+                        let a = document.createElement("a")
+                        a.setAttribute("href", `books?author=${author.name}`)
+                        a.append("view")
+                        cell2.appendChild(a)
+                    })
+                })
+        }
+    </script>
+</head>
+<body onload="getAll()">
+<table style="border: 0 solid; border-collapse: collapse; width: 990px;">
+    <tbody>
+    <tr th:insert="~{fragments/header :: header}"></tr>
+    <tr>
+        <td style="padding-left: 50px">
+            <table style="border: 0 solid; border-collapse: collapse; width: 100%;">
+                <tbody>
+                <tr>
+                    <td th:insert="~{fragments/side-menu}"></td>
+                    <td style="vertical-align: top">
+                        <h3 style="text-align: center">All authors</h3>
+                        <table class="data-table" id="authors-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Books by author</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
