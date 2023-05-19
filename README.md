@@ -20,4 +20,4 @@
 - spring-hw-15: Домашнее задание 15: Spring Integration
 - spring-hw-16: Домашнее задание 16: Spring Boot Actuator, Spring Data Rest
 - spring-hw-17: Домашнее задание 17: Docker
-- spring-hw-17: Домашнее задание 18: Hystrix
+- spring-hw-18: Домашнее задание 18: Hystrix
