@@ -1,0 +1,28 @@
+spring:
+  mongodb:
+    embedded:
+      version: 3.5.5
+  data:
+    mongodb:
+      database: library
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.spring.mongock.changelogTest
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+logging:
+  level:
+    root: error
+
+hystrix:
+  command:
+    default.execution.isolation.thread.timeoutInMilliseconds: 1000
